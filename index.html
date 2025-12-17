@@ -312,7 +312,7 @@
         }
 
         #player-north {
-            top: 100px;
+            top: 125px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -407,10 +407,12 @@
 
         .hand-horizontal {
             flex-direction: row;
+            z-index: 100;
         }
 
         .hand-vertical {
             flex-direction: column;
+            padding-top: 25px;
         }
 
         .hand-vertical .card {
@@ -439,6 +441,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding-top: 25px;
         }
 
         .played-card-container {
@@ -446,7 +449,7 @@
         }
 
         .played-card-container.south { bottom: 20px; }
-        .played-card-container.north { top: 20px; }
+        .played-card-container.north { top: 40px; }
         .played-card-container.west { left: 20px; }
         .played-card-container.east { right: 20px; }
 
@@ -644,6 +647,228 @@
             color: var(--gold-light);
         }
 
+        /* Piles de cartes guanyades */
+        .won-tricks-pile {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .won-tricks-pile:hover {
+            transform: scale(1.05);
+        }
+
+        .won-tricks-pile .pile-cards {
+            position: relative;
+            width: 50px;
+            height: 72px;
+        }
+
+        .won-tricks-pile .pile-card {
+            position: absolute;
+            width: 50px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-dark) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 6px;
+            box-shadow: 0 2px 5px var(--shadow);
+        }
+
+        .won-tricks-pile .pile-count {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--burgundy-dark);
+            color: var(--gold);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 1px solid var(--gold);
+            white-space: nowrap;
+        }
+
+        #pile-south {
+            bottom: 130px;
+            right: 30px;
+        }
+
+        #pile-north {
+            top: 180px;
+            left: 30px;
+        }
+
+        #pile-west {
+            bottom: 30px;
+            left: 120px;
+        }
+
+        #pile-east {
+            bottom: 70px;
+            right: 30px;
+        }
+
+        /* Modal per veure última basa */
+        #last-trick-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+            cursor: pointer;
+        }
+
+        .last-trick-content {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 30px 40px;
+            border-radius: 20px;
+            border: 3px solid var(--gold);
+            text-align: center;
+        }
+
+        .last-trick-content h3 {
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .last-trick-cards {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .last-trick-card-container {
+            text-align: center;
+        }
+
+        .last-trick-card-container .card {
+            cursor: default;
+        }
+
+        .last-trick-card-container .player-label {
+            font-size: 0.8rem;
+            color: var(--gold-light);
+            margin-top: 8px;
+        }
+
+        .last-trick-card-container .player-label.winner {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .last-trick-hint {
+            color: var(--gold-light);
+            font-size: 0.85rem;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        /* Responsive per les piles */
+        @media (max-width: 768px) {
+            .won-tricks-pile .pile-cards {
+                width: 40px;
+                height: 58px;
+            }
+
+            .won-tricks-pile .pile-card {
+                width: 40px;
+                height: 58px;
+            }
+
+            .won-tricks-pile .pile-count {
+                font-size: 0.65rem;
+                padding: 2px 6px;
+                bottom: -22px;
+            }
+
+            #pile-south {
+                bottom: 130px;
+                right: 30px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            #pile-north {
+                top: 50%;
+                left: 10px;
+                transform: translateY(-80%);
+            }
+
+            #pile-west {
+                bottom: auto;
+                top: 35%;
+                left: 10px;
+            }
+
+            #pile-east {
+                bottom: auto;
+                top: 35%;
+                right: 10px;
+            }
+
+            .last-trick-content {
+                padding: 20px 25px;
+                margin: 15px;
+            }
+
+            .last-trick-cards {
+                gap: 8px;
+            }
+
+            .last-trick-cards .card {
+                width: 50px;
+                height: 72px;
+            }
+
+            .last-trick-cards .card .suit {
+                font-size: 1.4rem;
+            }
+
+            .last-trick-cards .card .value {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .won-tricks-pile .pile-cards {
+                width: 35px;
+                height: 50px;
+            }
+
+            .won-tricks-pile .pile-card {
+                width: 35px;
+                height: 50px;
+            }
+
+            #pile-south {
+                right: 5px;
+            }
+
+            #pile-north {
+                left: 5px;
+            }
+
+            .last-trick-cards .card {
+                width: 42px;
+                height: 60px;
+            }
+
+            .last-trick-cards .card .suit {
+                font-size: 1.2rem;
+            }
+
+            .last-trick-cards .card .value {
+                font-size: 0.7rem;
+            }
+        }
+
         /* Log de partida */
         #log-container {
             position: absolute;
@@ -672,7 +897,7 @@
         }
 
         #game-log {
-            width: 250px;
+            /* width: 250px; */
             max-height: 200px;
             overflow-y: auto;
             background: rgba(0,0,0,0.5);
@@ -1128,6 +1353,24 @@
             <div class="hand hand-horizontal" id="hand-south"></div>
         </div>
 
+        <!-- Piles de cartes guanyades -->
+        <div id="pile-south" class="won-tricks-pile" style="display: none;">
+            <div class="pile-cards"></div>
+            <div class="pile-count">0 bases</div>
+        </div>
+        <div id="pile-north" class="won-tricks-pile" style="display: none;">
+            <div class="pile-cards"></div>
+            <div class="pile-count">0 bases</div>
+        </div>
+        <div id="pile-west" class="won-tricks-pile" style="display: none;">
+            <div class="pile-cards"></div>
+            <div class="pile-count">0 bases</div>
+        </div>
+        <div id="pile-east" class="won-tricks-pile" style="display: none;">
+            <div class="pile-cards"></div>
+            <div class="pile-count">0 bases</div>
+        </div>
+
         <!-- Zona de joc -->
         <div id="play-area">
             <div class="played-card-container north" id="played-north"></div>
@@ -1146,6 +1389,15 @@
         <div id="log-container">
             <button id="log-toggle">📋 Mostrar log</button>
             <div id="game-log"></div>
+        </div>
+    </div>
+
+    <!-- Modal última basa -->
+    <div id="last-trick-modal">
+        <div class="last-trick-content">
+            <h3>Última basa guanyada</h3>
+            <div class="last-trick-cards" id="last-trick-cards"></div>
+            <p class="last-trick-hint">Clica per tancar</p>
         </div>
     </div>
 
@@ -1255,6 +1507,8 @@
             currentTrick: [],
             trickLeadSuit: null,
             tricksWon: { ns: [], ew: [] },
+            tricksWonBy: { south: [], north: [], west: [], east: [] },  // Bases guanyades per jugador
+            lastTrickBy: { south: null, north: null, west: null, east: null },  // Última basa de cada jugador
             trumpChooser: null,
             trumpDelegated: false,
             phase: 'dealing',  // dealing, trump-selection, contro, playing, scoring
@@ -1466,6 +1720,71 @@
                     container.appendChild(cardEl);
                 }
             });
+        }
+
+        function renderWonPiles() {
+            PLAYERS.forEach(player => {
+                const pileEl = document.getElementById(`pile-${player}`);
+                const pileCards = pileEl.querySelector('.pile-cards');
+                const pileCount = pileEl.querySelector('.pile-count');
+                const tricks = gameState.tricksWonBy[player];
+                
+                if (tricks.length === 0) {
+                    pileEl.style.display = 'none';
+                    return;
+                }
+                
+                pileEl.style.display = 'block';
+                pileCards.innerHTML = '';
+                
+                // Mostrar cartes apilades (màxim 5 visibles per efecte visual)
+                const maxVisible = Math.min(tricks.length, 5);
+                for (let i = 0; i < maxVisible; i++) {
+                    const cardBack = document.createElement('div');
+                    cardBack.className = 'pile-card';
+                    cardBack.style.top = (i * 2) + 'px';
+                    cardBack.style.left = (i * 2) + 'px';
+                    pileCards.appendChild(cardBack);
+                }
+                
+                pileCount.textContent = tricks.length + (tricks.length === 1 ? ' basa' : ' bases');
+            });
+        }
+
+        function showLastTrick(player) {
+            const lastTrick = gameState.lastTrickBy[player];
+            if (!lastTrick) return;
+            
+            const modal = document.getElementById('last-trick-modal');
+            const cardsContainer = document.getElementById('last-trick-cards');
+            cardsContainer.innerHTML = '';
+            
+            // Trobar el guanyador de la basa
+            const winningCard = findWinningCard(lastTrick.cards, lastTrick.leadSuit, gameState.trump);
+            
+            lastTrick.cards.forEach(trickCard => {
+                const container = document.createElement('div');
+                container.className = 'last-trick-card-container';
+                
+                const cardEl = createCardElement(trickCard);
+                container.appendChild(cardEl);
+                
+                const label = document.createElement('div');
+                label.className = 'player-label';
+                
+                const isWinner = trickCard.suit === winningCard.suit && trickCard.value === winningCard.value;
+                if (isWinner) {
+                    label.classList.add('winner');
+                    label.textContent = PLAYER_NAMES[trickCard.player] + ' ★';
+                } else {
+                    label.textContent = PLAYER_NAMES[trickCard.player];
+                }
+                
+                container.appendChild(label);
+                cardsContainer.appendChild(container);
+            });
+            
+            modal.style.display = 'flex';
         }
 
         // ==================== LÒGICA DEL JOC ====================
@@ -1846,6 +2165,8 @@
             gameState.currentTrick = [];
             gameState.trickLeadSuit = null;
             gameState.tricksWon = { ns: [], ew: [] };
+            gameState.tricksWonBy = { south: [], north: [], west: [], east: [] };
+            gameState.lastTrickBy = { south: null, north: null, west: null, east: null };
             gameState.trumpDelegated = false;
             gameState.controPhase = null;
             gameState.controTeam = null;
@@ -1854,6 +2175,7 @@
             updateTrumpDisplay();
             updateMultiplierDisplay();
             renderPlayArea();
+            renderWonPiles();
             
             dealCards();
             renderHands();
@@ -2112,13 +2434,21 @@
             const points = calculateTrickPoints(gameState.currentTrick);
             gameState.tricksWon[winningTeam].push(...gameState.currentTrick);
             
+            // Guardar la basa per al jugador guanyador
+            gameState.tricksWonBy[winner].push(gameState.currentTrick);
+            gameState.lastTrickBy[winner] = {
+                cards: [...gameState.currentTrick],
+                leadSuit: gameState.trickLeadSuit
+            };
+            
             log(`${PLAYER_NAMES[winner]} guanya l'última basa (${points} punts)`);
             
             await delay(1000);
             
-            // Netejar zona de joc
+            // Netejar zona de joc i actualitzar piles
             gameState.currentTrick = [];
             renderPlayArea();
+            renderWonPiles();
         }
 
         async function playOneTrick() {
@@ -2150,13 +2480,21 @@
             const points = calculateTrickPoints(gameState.currentTrick);
             gameState.tricksWon[winningTeam].push(...gameState.currentTrick);
             
+            // Guardar la basa per al jugador guanyador
+            gameState.tricksWonBy[winner].push(gameState.currentTrick);
+            gameState.lastTrickBy[winner] = {
+                cards: [...gameState.currentTrick],
+                leadSuit: gameState.trickLeadSuit
+            };
+            
             log(`${PLAYER_NAMES[winner]} guanya la basa (${points} punts)`);
             
             await delay(1000);
             
-            // Netejar zona de joc
+            // Netejar zona de joc i actualitzar piles
             gameState.currentTrick = [];
             renderPlayArea();
+            renderWonPiles();
             
             // El guanyador comença la següent
             gameState.currentPlayer = winner;
@@ -2322,6 +2660,18 @@
                 const trump = btn.dataset.trump;
                 selectTrump(trump, 'south');
             });
+        });
+
+        // Clicar a les piles per veure l'última basa
+        PLAYERS.forEach(player => {
+            document.getElementById(`pile-${player}`).addEventListener('click', () => {
+                showLastTrick(player);
+            });
+        });
+
+        // Tancar modal d'última basa
+        document.getElementById('last-trick-modal').addEventListener('click', () => {
+            document.getElementById('last-trick-modal').style.display = 'none';
         });
 
         // Tecles ràpides
