@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botifarra - Joc de Cartes Català</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C9A227;
+            --gold-light: #E8D48B;
+            --burgundy: #6B1C23;
+            --burgundy-dark: #4A1219;
+            --cream: #F5F0E1;
+            --cream-dark: #E8DFC8;
+            --green-felt: #1B5E20;
+            --green-felt-dark: #0D3B0F;
+            --card-white: #FFFEF8;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: radial-gradient(ellipse at center, var(--green-felt) 0%, var(--green-felt-dark) 100%);
+            min-height: 100vh;
+            color: var(--cream);
+            overflow: hidden;
+        }
+
+        /* Textura de feltre */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Pantalla d'inici */
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 50%, var(--burgundy-dark) 100%);
+        }
+
+        #start-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L35 25H55L39 38L45 58L30 45L15 58L21 38L5 25H25L30 5Z' fill='%23C9A227' fill-opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .title-container {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title-container h1 {
+            font-size: 5rem;
+            color: var(--gold);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .title-container p {
+            font-size: 1.3rem;
+            color: var(--gold-light);
+            font-style: italic;
+            letter-spacing: 0.2em;
+        }
+
+        .decorative-cards {
+            display: flex;
+            gap: -20px;
+            margin-bottom: 3rem;
+            animation: fadeIn 1.5s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .decorative-card {
+            width: 80px;
+            height: 120px;
+            background: var(--card-white);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            transform: rotate(var(--rotation));
+            margin-left: -15px;
+            border: 2px solid var(--gold);
+        }
+
+        .decorative-card:first-child {
+            margin-left: 0;
+        }
+
+        #start-button {
+            padding: 1.2rem 4rem;
+            font-size: 1.4rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+            color: var(--burgundy-dark);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(201, 162, 39, 0.4);
+            animation: fadeIn 1.5s ease-out 0.6s both;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        #start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(201, 162, 39, 0.6);
+        }
+
+        /* Taula de joc */
+        #game-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Marcador */
+        #scoreboard {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 15px 40px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 5px 20px var(--shadow);
+            display: flex;
+            gap: 40px;
+            z-index: 100;
+        }
+
+        .score-team {
+            text-align: center;
+        }
+
+        .score-team-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            color: var(--gold-light);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .score-divider {
+            width: 2px;
+            background: var(--gold);
+            opacity: 0.5;
+        }
+
+        /* Zona de triomf */
+        #trump-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            z-index: 100;
+        }
+
+        #trump-display .label {
+            font-size: 0.8rem;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
+        }
+
+        #trump-display .trump-suit {
+            font-size: 2.5rem;
+        }
+
+        #trump-display .trump-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--gold);
+        }
+
+        /* Multiplicador */
+        #multiplier-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            z-index: 100;
+        }
+
+        #multiplier-display .label {
+            font-size: 0.8rem;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
+        }
+
+        #multiplier-display .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        /* Jugadors */
+        .player-area {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .player-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--gold);
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+
+        .player-name.active {
+            box-shadow: 0 0 20px var(--gold);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px var(--gold); }
+            50% { box-shadow: 0 0 30px var(--gold), 0 0 40px var(--gold); }
+        }
+
+        .player-name.dealer::after {
+            content: ' 🎴';
+        }
+
+        /* Posicions dels jugadors */
+        #player-south {
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #player-north {
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #player-west {
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #player-east {
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Cartes */
+        .card {
+            width: 70px;
+            height: 100px;
+            background: var(--card-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border: 1px solid #ddd;
+            user-select: none;
+        }
+
+        .card.card-back {
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-dark) 100%);
+            border: 2px solid var(--gold);
+        }
+
+        .card.card-back::before {
+            content: '🏵️';
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+
+        .card .suit {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .card .value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .card.oros .suit { color: #FFD700; }
+        .card.copes .suit { color: #C41E3A; }
+        .card.espases .suit { color: #4169E1; }
+        .card.bastos .suit { color: #228B22; }
+
+        .card.playable:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 30px var(--shadow);
+        }
+
+        .card.playable {
+            cursor: pointer;
+        }
+
+        .card:not(.playable) {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .card.selected {
+            transform: translateY(-20px);
+            box-shadow: 0 0 20px var(--gold), 0 15px 30px var(--shadow);
+        }
+
+        /* Mà del jugador */
+        .hand {
+            display: flex;
+            justify-content: center;
+        }
+
+        .hand .card {
+            margin: 0 -10px;
+            transition: all 0.2s ease;
+        }
+
+        .hand-horizontal {
+            flex-direction: row;
+        }
+
+        .hand-vertical {
+            flex-direction: column;
+        }
+
+        .hand-vertical .card {
+            margin: -30px 0;
+        }
+
+        #player-west .hand-vertical .card,
+        #player-east .hand-vertical .card {
+            width: 50px;
+            height: 75px;
+        }
+
+        #player-north .hand .card {
+            width: 55px;
+            height: 80px;
+        }
+
+        /* Zona central de joc */
+        #play-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .played-card-container {
+            position: absolute;
+        }
+
+        .played-card-container.south { bottom: 20px; }
+        .played-card-container.north { top: 20px; }
+        .played-card-container.west { left: 20px; }
+        .played-card-container.east { right: 20px; }
+
+        .played-card-container .card {
+            cursor: default;
+        }
+
+        /* Panell de selecció de triomf */
+        #trump-selection {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .trump-panel {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid var(--gold);
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .trump-panel h2 {
+            color: var(--gold);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .trump-panel p {
+            color: var(--gold-light);
+            margin-bottom: 25px;
+        }
+
+        .trump-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .trump-btn {
+            width: 90px;
+            height: 90px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            background: var(--card-white);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .trump-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        .trump-btn .suit-icon {
+            font-size: 2.5rem;
+        }
+
+        .trump-btn .suit-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .trump-btn.botifarra {
+            width: 100%;
+            height: auto;
+            padding: 15px;
+            flex-direction: row;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        }
+
+        .trump-btn.botifarra .suit-name {
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .trump-btn.delegar {
+            width: 100%;
+            height: auto;
+            padding: 15px;
+            background: var(--cream-dark);
+        }
+
+        .trump-btn.delegar .suit-name {
+            font-size: 1rem;
+        }
+
+        /* Panell de contro */
+        #contro-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .contro-content {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid var(--gold);
+            text-align: center;
+        }
+
+        .contro-content h2 {
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .contro-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .contro-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .contro-btn.yes {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--burgundy-dark);
+        }
+
+        .contro-btn.no {
+            background: transparent;
+            color: var(--gold);
+        }
+
+        .contro-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Missatges */
+        #message-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            z-index: 500;
+            display: none;
+            animation: messageAppear 0.3s ease;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        #message-area h3 {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        #message-area p {
+            color: var(--gold-light);
+        }
+
+        /* Log de partida */
+        #log-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        #log-toggle {
+            display: none;
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        #log-toggle:hover {
+            background: var(--burgundy);
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        #game-log {
+            width: 250px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        #game-log.hidden {
+            display: none;
+        }
+
+        #game-log::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #game-log::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 5px;
+        }
+
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--cream);
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-entry.important {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* Final de partida */
+        #game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .game-over-content {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 50px;
+            border-radius: 25px;
+            border: 3px solid var(--gold);
+            text-align: center;
+            animation: fadeInDown 0.5s ease;
+        }
+
+        .game-over-content h2 {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .game-over-content .final-score {
+            font-size: 2rem;
+            color: var(--gold-light);
+            margin-bottom: 30px;
+        }
+
+        .game-over-content button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--burgundy-dark);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .game-over-content button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        /* Animació de recollir basa */
+        @keyframes collectCards {
+            to {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        .collecting {
+            animation: collectCards 0.5s ease forwards;
+        }
+
+        /* Responsive - Tablets */
+        @media (max-width: 900px) {
+            #log-toggle {
+                display: block;
+            }
+
+            #game-log {
+                width: 200px;
+                max-height: 150px;
+            }
+        }
+
+        /* Responsive - Mòbils */
+        @media (max-width: 768px) {
+            .title-container h1 {
+                font-size: 3rem;
+            }
+            
+            .card {
+                width: 50px;
+                height: 72px;
+            }
+            
+            .card .suit {
+                font-size: 1.4rem;
+            }
+            
+            .card .value {
+                font-size: 0.8rem;
+            }
+            
+            #scoreboard {
+                padding: 8px 15px;
+                gap: 15px;
+                top: 10px;
+            }
+            
+            .score-value {
+                font-size: 1.3rem;
+            }
+
+            .score-team-name {
+                font-size: 0.75rem;
+            }
+
+            #trump-display, #multiplier-display {
+                padding: 10px 15px;
+                top: 10px;
+            }
+
+            #trump-display .trump-suit {
+                font-size: 1.8rem;
+            }
+
+            #trump-display .trump-name {
+                font-size: 0.85rem;
+            }
+
+            #multiplier-display .value {
+                font-size: 1.4rem;
+            }
+
+            #log-container {
+                bottom: auto;
+                top: 70px;
+                left: 10px;
+            }
+
+            #log-toggle {
+                display: block;
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+
+            #game-log {
+                width: 180px;
+                max-height: 120px;
+                padding: 10px;
+                font-size: 0.75rem;
+            }
+
+            /* Mà del jugador humà en dues files */
+            #player-south {
+                bottom: 10px;
+            }
+
+            #player-south .hand {
+                flex-wrap: wrap;
+                justify-content: center;
+                max-width: 90vw;
+            }
+
+            #player-south .hand .card {
+                margin: 3px;
+            }
+
+            /* Altres jugadors */
+            #player-north {
+                top: 70px;
+            }
+
+            #player-north .hand .card {
+                width: 40px;
+                height: 58px;
+                margin: 0 -8px;
+            }
+
+            #player-north .hand .card .suit {
+                font-size: 1.2rem;
+            }
+
+            #player-west .hand-vertical .card,
+            #player-east .hand-vertical .card {
+                width: 38px;
+                height: 55px;
+                margin: -22px 0;
+            }
+
+            .player-name {
+                font-size: 0.9rem;
+                padding: 5px 12px;
+            }
+
+            /* Zona de joc més compacta */
+            #play-area {
+                width: 200px;
+                height: 200px;
+            }
+
+            .played-card-container .card {
+                width: 50px;
+                height: 72px;
+            }
+
+            .played-card-container.south { bottom: 10px; }
+            .played-card-container.north { top: 10px; }
+            .played-card-container.west { left: 10px; }
+            .played-card-container.east { right: 10px; }
+
+            /* Panells modals */
+            .trump-panel {
+                padding: 25px;
+                margin: 15px;
+                max-width: calc(100vw - 30px);
+            }
+
+            .trump-panel h2 {
+                font-size: 1.4rem;
+            }
+
+            .trump-options {
+                gap: 10px;
+            }
+
+            .trump-btn {
+                width: 70px;
+                height: 70px;
+                border-radius: 10px;
+            }
+
+            .trump-btn .suit-icon {
+                font-size: 1.8rem;
+            }
+
+            .trump-btn .suit-name {
+                font-size: 0.7rem;
+            }
+
+            .contro-content {
+                padding: 25px;
+                margin: 15px;
+            }
+
+            .contro-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+
+            #message-area {
+                padding: 15px 25px;
+                max-width: calc(100vw - 40px);
+            }
+
+            #message-area h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Responsive - Mòbils molt petits */
+        @media (max-width: 480px) {
+            .card {
+                width: 42px;
+                height: 60px;
+            }
+
+            .card .suit {
+                font-size: 1.2rem;
+            }
+
+            .card .value {
+                font-size: 0.7rem;
+            }
+
+            #player-south .hand .card {
+                margin: 2px;
+            }
+
+            #scoreboard {
+                padding: 6px 12px;
+                gap: 10px;
+            }
+
+            .score-value {
+                font-size: 1.1rem;
+            }
+
+            .score-team-name {
+                font-size: 0.65rem;
+            }
+
+            #trump-display, #multiplier-display {
+                padding: 8px 12px;
+            }
+
+            #trump-display .label,
+            #multiplier-display .label {
+                font-size: 0.65rem;
+            }
+
+            #trump-display .trump-suit {
+                font-size: 1.5rem;
+            }
+
+            #multiplier-display .value {
+                font-size: 1.2rem;
+            }
+
+            #player-north .hand .card {
+                width: 35px;
+                height: 50px;
+                margin: 0 -10px;
+            }
+
+            #player-west .hand-vertical .card,
+            #player-east .hand-vertical .card {
+                width: 32px;
+                height: 46px;
+                margin: -20px 0;
+            }
+
+            .player-name {
+                font-size: 0.8rem;
+                padding: 4px 10px;
+            }
+
+            #play-area {
+                width: 160px;
+                height: 160px;
+            }
+
+            .played-card-container .card {
+                width: 42px;
+                height: 60px;
+            }
+
+            .trump-btn {
+                width: 60px;
+                height: 60px;
+            }
+
+            .trump-btn .suit-icon {
+                font-size: 1.5rem;
+            }
+
+            .game-over-content {
+                padding: 30px;
+                margin: 15px;
+            }
+
+            .game-over-content h2 {
+                font-size: 2rem;
+            }
+
+            .game-over-content .final-score {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pantalla d'inici -->
+    <div id="start-screen">
+        <div class="title-container">
+            <h1>BOTIFARRA</h1>
+            <p>El joc de cartes català</p>
+        </div>
+        <div class="decorative-cards">
+            <div class="decorative-card" style="--rotation: -15deg;">🪙</div>
+            <div class="decorative-card" style="--rotation: -5deg;">🏆</div>
+            <div class="decorative-card" style="--rotation: 5deg;">⚔️</div>
+            <div class="decorative-card" style="--rotation: 15deg;">🌿</div>
+        </div>
+        <button id="start-button">Començar Partida</button>
+    </div>
+
+    <!-- Contenidor del joc -->
+    <div id="game-container">
+        <!-- Marcador -->
+        <div id="scoreboard">
+            <div class="score-team">
+                <div class="score-team-name">Tu i Nord</div>
+                <div class="score-value" id="score-ns">0</div>
+            </div>
+            <div class="score-divider"></div>
+            <div class="score-team">
+                <div class="score-team-name">Est i Oest</div>
+                <div class="score-value" id="score-ew">0</div>
+            </div>
+        </div>
+
+        <!-- Multiplicador -->
+        <div id="multiplier-display">
+            <div class="label">Multiplicador</div>
+            <div class="value" id="multiplier-value">×1</div>
+        </div>
+
+        <!-- Triomf -->
+        <div id="trump-display">
+            <div class="label">Triomf</div>
+            <div class="trump-suit" id="trump-suit">-</div>
+            <div class="trump-name" id="trump-name">-</div>
+        </div>
+
+        <!-- Jugadors -->
+        <div id="player-north" class="player-area">
+            <div class="player-name" id="name-north">Nord (Company)</div>
+            <div class="hand hand-horizontal" id="hand-north"></div>
+        </div>
+
+        <div id="player-west" class="player-area">
+            <div class="player-name" id="name-west">Oest</div>
+            <div class="hand hand-vertical" id="hand-west"></div>
+        </div>
+
+        <div id="player-east" class="player-area">
+            <div class="player-name" id="name-east">Est</div>
+            <div class="hand hand-vertical" id="hand-east"></div>
+        </div>
+
+        <div id="player-south" class="player-area">
+            <div class="player-name" id="name-south">Tu</div>
+            <div class="hand hand-horizontal" id="hand-south"></div>
+        </div>
+
+        <!-- Zona de joc -->
+        <div id="play-area">
+            <div class="played-card-container north" id="played-north"></div>
+            <div class="played-card-container south" id="played-south"></div>
+            <div class="played-card-container west" id="played-west"></div>
+            <div class="played-card-container east" id="played-east"></div>
+        </div>
+
+        <!-- Missatges -->
+        <div id="message-area">
+            <h3 id="message-title"></h3>
+            <p id="message-text"></p>
+        </div>
+
+        <!-- Log -->
+        <div id="log-container">
+            <button id="log-toggle">📋 Mostrar log</button>
+            <div id="game-log"></div>
+        </div>
+    </div>
+
+    <!-- Selecció de triomf -->
+    <div id="trump-selection">
+        <div class="trump-panel">
+            <h2>Escull Triomf</h2>
+            <p id="trump-instruction">Tria el pal que serà triomf aquesta mà</p>
+            <div class="trump-options">
+                <button class="trump-btn" data-trump="oros">
+                    <span class="suit-icon">🪙</span>
+                    <span class="suit-name">Oros</span>
+                </button>
+                <button class="trump-btn" data-trump="copes">
+                    <span class="suit-icon">🏆</span>
+                    <span class="suit-name">Copes</span>
+                </button>
+                <button class="trump-btn" data-trump="espases">
+                    <span class="suit-icon">⚔️</span>
+                    <span class="suit-name">Espases</span>
+                </button>
+                <button class="trump-btn" data-trump="bastos">
+                    <span class="suit-icon">🌿</span>
+                    <span class="suit-name">Bastos</span>
+                </button>
+                <button class="trump-btn botifarra" data-trump="botifarra">
+                    <span class="suit-icon">🎉</span>
+                    <span class="suit-name">BOTIFARRA!</span>
+                </button>
+                <button class="trump-btn delegar" data-trump="delegar" id="btn-delegar">
+                    <span class="suit-name">Passar al company</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panell de contro -->
+    <div id="contro-panel">
+        <div class="contro-content">
+            <h2 id="contro-title">Vols contrar?</h2>
+            <div class="contro-buttons">
+                <button class="contro-btn yes" id="btn-contro-yes">Sí</button>
+                <button class="contro-btn no" id="btn-contro-no">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final de partida -->
+    <div id="game-over">
+        <div class="game-over-content">
+            <h2 id="winner-text">Victòria!</h2>
+            <div class="final-score" id="final-score"></div>
+            <button id="btn-new-game">Nova Partida</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CONFIGURACIÓ DEL JOC ====================
+        const SUITS = ['oros', 'copes', 'espases', 'bastos'];
+        const SUIT_ICONS = {
+            'oros': '🪙',
+            'copes': '🏆',
+            'espases': '⚔️',
+            'bastos': '🌿'
+        };
+        const SUIT_NAMES = {
+            'oros': 'Oros',
+            'copes': 'Copes',
+            'espases': 'Espases',
+            'bastos': 'Bastos',
+            'botifarra': 'Botifarra'
+        };
+
+        // Valors de les cartes (de més a menys valor)
+        const CARD_ORDER = [9, 1, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2];
+        const CARD_POINTS = {
+            9: 5,   // Manilla
+            1: 4,   // As
+            12: 3,  // Rei
+            11: 2,  // Cavall
+            10: 1,  // Sota
+            8: 0, 7: 0, 6: 0, 5: 0, 4: 0, 3: 0, 2: 0
+        };
+        const CARD_NAMES = {
+            1: 'As', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8',
+            9: 'Manilla', 10: 'Sota', 11: 'Cavall', 12: 'Rei'
+        };
+
+        // Jugadors: south (humà), west, north (company), east
+        const PLAYERS = ['south', 'north', 'west', 'east'];
+        const PLAYER_NAMES = {
+            'south': 'Tu',
+            'north': 'Nord',
+            'west': 'Oest',
+            'east': 'Est'
+        };
+
+        // ==================== ESTAT DEL JOC ====================
+        let gameState = {
+            hands: { south: [], north: [], west: [], east: [] },
+            scores: { ns: 0, ew: 0 },  // north-south vs east-west
+            dealer: 'south',
+            currentPlayer: 'east',  // El primer a jugar és a la dreta del que reparteix
+            trump: null,
+            isBotifarra: false,
+            multiplier: 1,
+            currentTrick: [],
+            trickLeadSuit: null,
+            tricksWon: { ns: [], ew: [] },
+            trumpChooser: null,
+            trumpDelegated: false,
+            phase: 'dealing',  // dealing, trump-selection, contro, playing, scoring
+            controPhase: null,  // null, 'contro', 'recontro', 'santvicenc'
+            controTeam: null,
+            waitingForContro: false
+        };
+
+        // ==================== UTILITATS ====================
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function getTeam(player) {
+            return (player === 'south' || player === 'north') ? 'ns' : 'ew';
+        }
+
+        function getPartner(player) {
+            const partners = { 'south': 'north', 'north': 'south', 'east': 'west', 'west': 'east' };
+            return partners[player];
+        }
+
+        function getNextPlayer(player) {
+            // Sentit antihorari: south -> east -> north -> west -> south
+            const order = ['south', 'east', 'north', 'west'];
+            const idx = order.indexOf(player);
+            return order[(idx + 1) % 4];
+        }
+
+        function getCardStrength(card) {
+            return CARD_ORDER.indexOf(card.value);
+        }
+
+        function compareCards(card1, card2, leadSuit, trump) {
+            // Retorna true si card1 guanya a card2
+            const isTrump1 = trump && card1.suit === trump;
+            const isTrump2 = trump && card2.suit === trump;
+            
+            if (isTrump1 && !isTrump2) return true;
+            if (!isTrump1 && isTrump2) return false;
+            
+            // Ambdues són triomf o cap ho és
+            if (isTrump1 && isTrump2) {
+                return getCardStrength(card1) < getCardStrength(card2);
+            }
+            
+            // Cap és triomf
+            const isLead1 = card1.suit === leadSuit;
+            const isLead2 = card2.suit === leadSuit;
+            
+            if (isLead1 && !isLead2) return true;
+            if (!isLead1 && isLead2) return false;
+            
+            // Ambdues són del pal de sortida o cap ho és
+            if (isLead1 && isLead2) {
+                return getCardStrength(card1) < getCardStrength(card2);
+            }
+            
+            return false;  // Si cap és del pal de sortida, la primera guanya
+        }
+
+        function findWinningCard(trick, leadSuit, trump) {
+            let winner = trick[0];
+            for (let i = 1; i < trick.length; i++) {
+                if (compareCards(trick[i], winner, leadSuit, trump)) {
+                    winner = trick[i];
+                }
+            }
+            return winner;
+        }
+
+        function calculateTrickPoints(trick) {
+            let points = 1;  // 1 punt per basa
+            for (const card of trick) {
+                points += CARD_POINTS[card.value];
+            }
+            return points;
+        }
+
+        // ==================== INTERFÍCIE ====================
+        function log(message, important = false) {
+            const logDiv = document.getElementById('game-log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry' + (important ? ' important' : '');
+            entry.textContent = message;
+            logDiv.insertBefore(entry, logDiv.firstChild);
+            if (logDiv.children.length > 50) {
+                logDiv.removeChild(logDiv.lastChild);
+            }
+        }
+
+        function showMessage(title, text, duration = 2000) {
+            const msgArea = document.getElementById('message-area');
+            document.getElementById('message-title').textContent = title;
+            document.getElementById('message-text').textContent = text;
+            msgArea.style.display = 'block';
+            
+            if (duration > 0) {
+                setTimeout(() => {
+                    msgArea.style.display = 'none';
+                }, duration);
+            }
+        }
+
+        function hideMessage() {
+            document.getElementById('message-area').style.display = 'none';
+        }
+
+        function updateScoreboard() {
+            document.getElementById('score-ns').textContent = gameState.scores.ns;
+            document.getElementById('score-ew').textContent = gameState.scores.ew;
+        }
+
+        function updateTrumpDisplay() {
+            const suitEl = document.getElementById('trump-suit');
+            const nameEl = document.getElementById('trump-name');
+            
+            if (gameState.trump) {
+                suitEl.textContent = SUIT_ICONS[gameState.trump];
+                nameEl.textContent = SUIT_NAMES[gameState.trump];
+            } else if (gameState.isBotifarra) {
+                suitEl.textContent = '🎉';
+                nameEl.textContent = 'Botifarra';
+            } else {
+                suitEl.textContent = '-';
+                nameEl.textContent = '-';
+            }
+        }
+
+        function updateMultiplierDisplay() {
+            document.getElementById('multiplier-value').textContent = '×' + gameState.multiplier;
+        }
+
+        function updatePlayerActive() {
+            PLAYERS.forEach(p => {
+                const nameEl = document.getElementById(`name-${p}`);
+                nameEl.classList.remove('active');
+                nameEl.classList.remove('dealer');
+            });
+            
+            if (gameState.currentPlayer) {
+                document.getElementById(`name-${gameState.currentPlayer}`).classList.add('active');
+            }
+            document.getElementById(`name-${gameState.dealer}`).classList.add('dealer');
+        }
+
+        function createCardElement(card, faceUp = true) {
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card';
+            
+            if (faceUp) {
+                cardEl.classList.add(card.suit);
+                cardEl.innerHTML = `
+                    <span class="suit">${SUIT_ICONS[card.suit]}</span>
+                    <span class="value">${CARD_NAMES[card.value]}</span>
+                `;
+                cardEl.dataset.suit = card.suit;
+                cardEl.dataset.value = card.value;
+            } else {
+                cardEl.classList.add('card-back');
+            }
+            
+            return cardEl;
+        }
+
+        function renderHands() {
+            PLAYERS.forEach(player => {
+                const handEl = document.getElementById(`hand-${player}`);
+                handEl.innerHTML = '';
+                
+                const hand = gameState.hands[player];
+                const isHuman = player === 'south';
+                
+                // Ordenar cartes per pal i valor
+                const sortedHand = [...hand].sort((a, b) => {
+                    if (a.suit !== b.suit) {
+                        return SUITS.indexOf(a.suit) - SUITS.indexOf(b.suit);
+                    }
+                    return getCardStrength(a) - getCardStrength(b);
+                });
+                
+                sortedHand.forEach(card => {
+                    const cardEl = createCardElement(card, isHuman);
+                    if (isHuman && gameState.phase === 'playing' && gameState.currentPlayer === 'south') {
+                        const playable = isCardPlayable(card);
+                        if (playable) {
+                            cardEl.classList.add('playable');
+                            cardEl.addEventListener('click', () => playCard(player, card));
+                        }
+                    }
+                    handEl.appendChild(cardEl);
+                });
+            });
+        }
+
+        function renderPlayArea() {
+            PLAYERS.forEach(player => {
+                const container = document.getElementById(`played-${player}`);
+                container.innerHTML = '';
+                
+                const playedCard = gameState.currentTrick.find(t => t.player === player);
+                if (playedCard) {
+                    const cardEl = createCardElement(playedCard);
+                    container.appendChild(cardEl);
+                }
+            });
+        }
+
+        // ==================== LÒGICA DEL JOC ====================
+        function createDeck() {
+            const deck = [];
+            SUITS.forEach(suit => {
+                for (let value = 1; value <= 12; value++) {
+                    deck.push({ suit, value });
+                }
+            });
+            return deck;
+        }
+
+        function dealCards() {
+            const deck = shuffle(createDeck());
+            
+            // Repartir 12 cartes a cada jugador
+            let cardIndex = 0;
+            // Començar pel jugador a la dreta del que reparteix
+            let dealTo = getNextPlayer(getNextPlayer(getNextPlayer(gameState.dealer)));
+            
+            for (let round = 0; round < 3; round++) {  // 3 rondes de 4 cartes
+                for (let p = 0; p < 4; p++) {
+                    for (let c = 0; c < 4; c++) {
+                        gameState.hands[dealTo].push(deck[cardIndex++]);
+                    }
+                    dealTo = getNextPlayer(dealTo);
+                }
+            }
+            
+            log(`${PLAYER_NAMES[gameState.dealer]} reparteix les cartes`);
+        }
+
+        function isCardPlayable(card) {
+            if (gameState.phase !== 'playing') return false;
+            if (gameState.currentTrick.length === 0) return true;  // Primera carta
+            
+            const hand = gameState.hands['south'];
+            const leadSuit = gameState.trickLeadSuit;
+            const hasLeadSuit = hand.some(c => c.suit === leadSuit);
+            
+            // Si tenim el pal de sortida, hem de jugar-lo
+            if (hasLeadSuit && card.suit !== leadSuit) return false;
+            
+            // Comprovar si hem de matar
+            const partnerPlayed = gameState.currentTrick.find(t => t.player === 'north');
+            const winningCard = findWinningCard(gameState.currentTrick, leadSuit, gameState.trump);
+            const partnerIsWinning = partnerPlayed && 
+                winningCard.suit === partnerPlayed.suit && 
+                winningCard.value === partnerPlayed.value;
+            
+            if (partnerIsWinning) {
+                // La basa va del company, no cal matar
+                return true;
+            }
+            
+            // La basa no va del company, hem de matar si podem
+            if (hasLeadSuit) {
+                // Tenim el pal de sortida
+                const canBeat = hand.filter(c => c.suit === leadSuit)
+                    .some(c => compareCards(c, winningCard, leadSuit, gameState.trump));
+                if (canBeat) {
+                    // Hem de jugar una carta que mati
+                    return card.suit === leadSuit && 
+                           compareCards(card, winningCard, leadSuit, gameState.trump);
+                }
+                return card.suit === leadSuit;
+            } else {
+                // No tenim el pal de sortida
+                const canBeatWithTrump = gameState.trump && 
+                    hand.some(c => c.suit === gameState.trump && 
+                        compareCards(c, winningCard, leadSuit, gameState.trump));
+                
+                if (canBeatWithTrump) {
+                    // Hem de jugar triomf que mati
+                    if (card.suit !== gameState.trump) return false;
+                    return compareCards(card, winningCard, leadSuit, gameState.trump);
+                }
+                // No podem matar, podem jugar qualsevol
+                return true;
+            }
+        }
+
+        function getPlayableCards(player) {
+            const hand = gameState.hands[player];
+            if (gameState.currentTrick.length === 0) return [...hand];
+            
+            const leadSuit = gameState.trickLeadSuit;
+            const hasLeadSuit = hand.some(c => c.suit === leadSuit);
+            
+            // Trobar la carta guanyadora actual
+            const winningCard = findWinningCard(gameState.currentTrick, leadSuit, gameState.trump);
+            const partner = getPartner(player);
+            const partnerPlayed = gameState.currentTrick.find(t => t.player === partner);
+            const partnerIsWinning = partnerPlayed && 
+                winningCard.suit === partnerPlayed.suit && 
+                winningCard.value === partnerPlayed.value;
+            
+            if (partnerIsWinning) {
+                // La basa va del company
+                if (hasLeadSuit) {
+                    return hand.filter(c => c.suit === leadSuit);
+                }
+                return [...hand];
+            }
+            
+            // La basa no va del company
+            if (hasLeadSuit) {
+                const cardsOfLeadSuit = hand.filter(c => c.suit === leadSuit);
+                const beatingCards = cardsOfLeadSuit.filter(c => 
+                    compareCards(c, winningCard, leadSuit, gameState.trump));
+                return beatingCards.length > 0 ? beatingCards : cardsOfLeadSuit;
+            }
+            
+            // No tenim el pal de sortida
+            if (gameState.trump) {
+                const trumpCards = hand.filter(c => c.suit === gameState.trump);
+                const beatingTrumps = trumpCards.filter(c => 
+                    compareCards(c, winningCard, leadSuit, gameState.trump));
+                if (beatingTrumps.length > 0) return beatingTrumps;
+            }
+            
+            return [...hand];
+        }
+
+        // ==================== IA DELS BOTS ====================
+        function evaluateHand(hand, trump) {
+            let strength = 0;
+            const suitCounts = {};
+            const suitStrength = {};
+            
+            SUITS.forEach(s => {
+                suitCounts[s] = 0;
+                suitStrength[s] = 0;
+            });
+            
+            hand.forEach(card => {
+                suitCounts[card.suit]++;
+                const cardStrength = CARD_ORDER.length - getCardStrength(card);
+                suitStrength[card.suit] += cardStrength;
+                strength += cardStrength;
+                
+                // Bonus per cartes de valor
+                strength += CARD_POINTS[card.value] * 2;
+                
+                // Bonus per triomf
+                if (trump && card.suit === trump) {
+                    strength += cardStrength * 0.5;
+                }
+            });
+            
+            return { strength, suitCounts, suitStrength };
+        }
+
+        function botChooseTrump(player) {
+            const hand = gameState.hands[player];
+            const eval_ = evaluateHand(hand, null);
+            
+            // Trobar el millor pal
+            let bestSuit = null;
+            let bestScore = -1;
+            
+            SUITS.forEach(suit => {
+                const count = eval_.suitCounts[suit];
+                const strength = eval_.suitStrength[suit];
+                // Preferim pals amb moltes cartes i fortes
+                const score = count * 10 + strength;
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestSuit = suit;
+                }
+            });
+            
+            // Decidir si fer botifarra (si la mà és molt equilibrada i forta)
+            const avgStrength = eval_.strength / 12;
+            const variance = SUITS.reduce((acc, s) => {
+                return acc + Math.pow(eval_.suitCounts[s] - 3, 2);
+            }, 0);
+            
+            if (variance < 2 && avgStrength > 5) {
+                // Mà equilibrada i forta, considerar botifarra
+                if (Math.random() < 0.3) {
+                    return 'botifarra';
+                }
+            }
+            
+            return bestSuit;
+        }
+
+        function botDecideContro(player) {
+            const hand = gameState.hands[player];
+            const trump = gameState.trump;
+            const eval_ = evaluateHand(hand, trump);
+            
+            // Comptar triomfs
+            let trumpCount = 0;
+            let trumpStrength = 0;
+            if (trump) {
+                hand.forEach(card => {
+                    if (card.suit === trump) {
+                        trumpCount++;
+                        trumpStrength += CARD_ORDER.length - getCardStrength(card);
+                    }
+                });
+            }
+            
+            // Decidir basat en la força de la mà
+            const threshold = gameState.isBotifarra ? 55 : 45;
+            
+            if (gameState.controPhase === null) {
+                // Decidir contro
+                // Si tenim pocs triomfs i mà feble, contrar
+                if (trump && trumpCount <= 2 && eval_.strength > threshold) {
+                    return Math.random() < 0.6;
+                }
+                if (gameState.isBotifarra && eval_.strength > 60) {
+                    return Math.random() < 0.5;
+                }
+            } else if (gameState.controPhase === 'contro') {
+                // Decidir recontro
+                if (trump && trumpCount >= 4 && trumpStrength > 15) {
+                    return Math.random() < 0.7;
+                }
+                if (gameState.isBotifarra && eval_.strength > 70) {
+                    return Math.random() < 0.4;
+                }
+            } else if (gameState.controPhase === 'recontro' && !gameState.isBotifarra) {
+                // Decidir Sant Vicenç
+                if (eval_.strength > 75) {
+                    return Math.random() < 0.3;
+                }
+            }
+            
+            return false;
+        }
+
+        function botPlayCard(player) {
+            const playable = getPlayableCards(player);
+            if (playable.length === 1) return playable[0];
+            
+            const hand = gameState.hands[player];
+            const trump = gameState.trump;
+            const partner = getPartner(player);
+            
+            // Primera carta de la basa
+            if (gameState.currentTrick.length === 0) {
+                return botPlayLeadCard(player, playable);
+            }
+            
+            // No és la primera carta
+            const leadSuit = gameState.trickLeadSuit;
+            const winningCard = findWinningCard(gameState.currentTrick, leadSuit, trump);
+            const partnerPlayed = gameState.currentTrick.find(t => t.player === partner);
+            const partnerIsWinning = partnerPlayed && 
+                winningCard.suit === partnerPlayed.suit && 
+                winningCard.value === partnerPlayed.value;
+            
+            if (partnerIsWinning) {
+                // La basa va del company, jugar la carta més baixa possible
+                return playable.sort((a, b) => getCardStrength(b) - getCardStrength(a))[0];
+            }
+            
+            // Hem d'intentar guanyar
+            const beatingCards = playable.filter(c => 
+                compareCards(c, winningCard, leadSuit, trump));
+            
+            if (beatingCards.length > 0) {
+                // Jugar la carta més baixa que guanyi
+                if (gameState.currentTrick.length === 3) {
+                    // Últim a jugar, guanyar amb la mínima
+                    return beatingCards.sort((a, b) => getCardStrength(b) - getCardStrength(a))[0];
+                } else {
+                    // No som últims, jugar més fort si hi ha punts
+                    const trickPoints = calculateTrickPoints(gameState.currentTrick);
+                    if (trickPoints > 5) {
+                        // Molts punts, assegurar
+                        return beatingCards.sort((a, b) => getCardStrength(a) - getCardStrength(b))[0];
+                    }
+                    return beatingCards.sort((a, b) => getCardStrength(b) - getCardStrength(a))[0];
+                }
+            }
+            
+            // No podem guanyar, descartar la pitjor carta
+            // Preferim descartar cartes sense punts de pals curts
+            const suitCounts = {};
+            hand.forEach(c => {
+                suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1;
+            });
+            
+            return playable.sort((a, b) => {
+                // Primer per punts (menys punts millor)
+                const pointsDiff = CARD_POINTS[a.value] - CARD_POINTS[b.value];
+                if (pointsDiff !== 0) return pointsDiff;
+                
+                // Després per longitud de pal (menys cartes millor per crear curt)
+                const suitDiff = (suitCounts[a.suit] || 0) - (suitCounts[b.suit] || 0);
+                if (suitDiff !== 0) return suitDiff;
+                
+                // Finalment per força (més feble millor)
+                return getCardStrength(b) - getCardStrength(a);
+            })[0];
+        }
+
+        function botPlayLeadCard(player, playable) {
+            const hand = gameState.hands[player];
+            const trump = gameState.trump;
+            
+            // Comptar cartes per pal
+            const suitCounts = {};
+            const suitHighCards = {};
+            hand.forEach(c => {
+                suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1;
+                if (getCardStrength(c) < 3) {  // Manilla, As o Rei
+                    suitHighCards[c.suit] = (suitHighCards[c.suit] || 0) + 1;
+                }
+            });
+            
+            // Estratègia: sortir pel pal més llarg amb cartes altes
+            // o pel triomf si en tenim molts
+            
+            let bestCard = null;
+            let bestScore = -1;
+            
+            playable.forEach(card => {
+                let score = 0;
+                const count = suitCounts[card.suit] || 0;
+                const highCards = suitHighCards[card.suit] || 0;
+                const strength = CARD_ORDER.length - getCardStrength(card);
+                
+                // Bonus per sortir amb carta alta de pal llarg
+                if (strength >= 10 && count >= 3) {
+                    score += 20;
+                }
+                
+                // Bonus per triomf si en tenim molts
+                if (trump && card.suit === trump && count >= 4) {
+                    score += 15;
+                }
+                
+                // Penalització per sortir amb carta alta de pal curt
+                if (count <= 2 && strength >= 8) {
+                    score -= 10;
+                }
+                
+                // Preferir cartes amb punts si són segures
+                if (strength >= 10) {
+                    score += CARD_POINTS[card.value];
+                }
+                
+                score += strength;
+                
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestCard = card;
+                }
+            });
+            
+            return bestCard || playable[0];
+        }
+
+        // ==================== FLUX DEL JOC ====================
+        async function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            
+            // Determinar primer repartidor aleatòriament
+            gameState.dealer = PLAYERS[Math.floor(Math.random() * 4)];
+            
+            await startNewHand();
+        }
+
+        async function startNewHand() {
+            // Reset estat de la mà
+            gameState.hands = { south: [], north: [], west: [], east: [] };
+            gameState.trump = null;
+            gameState.isBotifarra = false;
+            gameState.multiplier = 1;
+            gameState.currentTrick = [];
+            gameState.trickLeadSuit = null;
+            gameState.tricksWon = { ns: [], ew: [] };
+            gameState.trumpDelegated = false;
+            gameState.controPhase = null;
+            gameState.controTeam = null;
+            gameState.phase = 'dealing';
+            
+            updateTrumpDisplay();
+            updateMultiplierDisplay();
+            renderPlayArea();
+            
+            dealCards();
+            renderHands();
+            
+            // Qui escull triomf és qui ha repartit
+            gameState.trumpChooser = gameState.dealer;
+            gameState.phase = 'trump-selection';
+            
+            await delay(500);
+            await trumpSelectionPhase();
+        }
+
+        async function trumpSelectionPhase() {
+            const chooser = gameState.trumpChooser;
+            
+            if (chooser === 'south') {
+                // Mostrar panell de selecció
+                document.getElementById('trump-selection').style.display = 'flex';
+                document.getElementById('btn-delegar').style.display = 
+                    gameState.trumpDelegated ? 'none' : 'block';
+            } else {
+                // Bot escull
+                await delay(1000);
+                
+                if (!gameState.trumpDelegated && Math.random() < 0.3) {
+                    // Bot delega al company
+                    log(`${PLAYER_NAMES[chooser]} passa al company`);
+                    gameState.trumpDelegated = true;
+                    gameState.trumpChooser = getPartner(chooser);
+                    await trumpSelectionPhase();
+                    return;
+                }
+                
+                const choice = botChooseTrump(chooser);
+                await selectTrump(choice, chooser);
+            }
+        }
+
+        async function selectTrump(choice, player) {
+            document.getElementById('trump-selection').style.display = 'none';
+            
+            if (choice === 'delegar') {
+                log(`${PLAYER_NAMES[player]} passa al company`);
+                gameState.trumpDelegated = true;
+                gameState.trumpChooser = getPartner(player);
+                await trumpSelectionPhase();
+                return;
+            }
+            
+            if (choice === 'botifarra') {
+                gameState.isBotifarra = true;
+                gameState.trump = null;
+                gameState.multiplier = 2;
+                log(`${PLAYER_NAMES[player]} fa BOTIFARRA!`, true);
+            } else {
+                gameState.trump = choice;
+                log(`${PLAYER_NAMES[player]} fa ${SUIT_NAMES[choice]}`);
+            }
+            
+            updateTrumpDisplay();
+            updateMultiplierDisplay();
+            
+            // Fase de contro
+            await controPhase();
+        }
+
+        async function controPhase() {
+            const trumpTeam = getTeam(gameState.trumpChooser);
+            const otherTeam = trumpTeam === 'ns' ? 'ew' : 'ns';
+            
+            // L'equip contrari pot contrar
+            gameState.phase = 'contro';
+            const controplayers = otherTeam === 'ns' ? ['south', 'north'] : ['east', 'west'];
+            
+            for (const player of controplayers) {
+                if (player === 'south') {
+                    // Preguntar a l'humà
+                    document.getElementById('contro-title').textContent = 'Vols contrar?';
+                    document.getElementById('btn-contro-yes').textContent = 'CONTRO';
+                    const decision = await askHumanContro();
+                    if (decision) {
+                        gameState.controPhase = 'contro';
+                        gameState.multiplier *= 2;
+                        gameState.controTeam = otherTeam;
+                        log(`${PLAYER_NAMES[player]} CONTRA!`, true);
+                        updateMultiplierDisplay();
+                        await recontroPhase();
+                        return;
+                    }
+                } else {
+                    await delay(800);
+                    if (botDecideContro(player)) {
+                        gameState.controPhase = 'contro';
+                        gameState.multiplier *= 2;
+                        gameState.controTeam = otherTeam;
+                        log(`${PLAYER_NAMES[player]} CONTRA!`, true);
+                        updateMultiplierDisplay();
+                        await recontroPhase();
+                        return;
+                    }
+                }
+            }
+            
+            // Ningú ha contrat
+            log('Cap contro');
+            await startPlaying();
+        }
+
+        async function recontroPhase() {
+            const trumpTeam = getTeam(gameState.trumpChooser);
+            const recontroPlayers = trumpTeam === 'ns' ? ['south', 'north'] : ['east', 'west'];
+            
+            for (const player of recontroPlayers) {
+                if (player === 'south') {
+                    document.getElementById('contro-title').textContent = 'Vols recontrar?';
+                    document.getElementById('btn-contro-yes').textContent = 'RECONTRO';
+                    const decision = await askHumanContro();
+                    if (decision) {
+                        gameState.controPhase = 'recontro';
+                        gameState.multiplier *= 2;
+                        log(`${PLAYER_NAMES[player]} RECONTRA!`, true);
+                        updateMultiplierDisplay();
+                        if (!gameState.isBotifarra) {
+                            await santVicencPhase();
+                        }
+                        return;
+                    }
+                } else {
+                    await delay(800);
+                    if (botDecideContro(player)) {
+                        gameState.controPhase = 'recontro';
+                        gameState.multiplier *= 2;
+                        log(`${PLAYER_NAMES[player]} RECONTRA!`, true);
+                        updateMultiplierDisplay();
+                        if (!gameState.isBotifarra) {
+                            await santVicencPhase();
+                        }
+                        return;
+                    }
+                }
+            }
+            
+            log('Cap recontro');
+            await startPlaying();
+        }
+
+        async function santVicencPhase() {
+            const otherTeam = gameState.controTeam;
+            const svPlayers = otherTeam === 'ns' ? ['south', 'north'] : ['east', 'west'];
+            
+            for (const player of svPlayers) {
+                if (player === 'south') {
+                    document.getElementById('contro-title').textContent = 'Vols fer Sant Vicenç?';
+                    document.getElementById('btn-contro-yes').textContent = 'SANT VICENÇ';
+                    const decision = await askHumanContro();
+                    if (decision) {
+                        gameState.controPhase = 'santvicenc';
+                        gameState.multiplier = 8;
+                        log(`${PLAYER_NAMES[player]} fa SANT VICENÇ!`, true);
+                        updateMultiplierDisplay();
+                        await startPlaying();
+                        return;
+                    }
+                } else {
+                    await delay(800);
+                    if (botDecideContro(player)) {
+                        gameState.controPhase = 'santvicenc';
+                        gameState.multiplier = 8;
+                        log(`${PLAYER_NAMES[player]} fa SANT VICENÇ!`, true);
+                        updateMultiplierDisplay();
+                        await startPlaying();
+                        return;
+                    }
+                }
+            }
+            
+            log('Cap Sant Vicenç');
+            await startPlaying();
+        }
+
+        function askHumanContro() {
+            return new Promise(resolve => {
+                document.getElementById('contro-panel').style.display = 'flex';
+                
+                const yesBtn = document.getElementById('btn-contro-yes');
+                const noBtn = document.getElementById('btn-contro-no');
+                
+                const yesHandler = () => {
+                    cleanup();
+                    resolve(true);
+                };
+                
+                const noHandler = () => {
+                    cleanup();
+                    resolve(false);
+                };
+                
+                const cleanup = () => {
+                    document.getElementById('contro-panel').style.display = 'none';
+                    yesBtn.removeEventListener('click', yesHandler);
+                    noBtn.removeEventListener('click', noHandler);
+                };
+                
+                yesBtn.addEventListener('click', yesHandler);
+                noBtn.addEventListener('click', noHandler);
+            });
+        }
+
+        async function startPlaying() {
+            gameState.phase = 'playing';
+            // El primer a jugar és a la dreta del que ha repartit
+            gameState.currentPlayer = getNextPlayer(getNextPlayer(getNextPlayer(gameState.dealer)));
+            
+            updatePlayerActive();
+            renderHands();
+            
+            await playTricks();
+        }
+
+        async function playTricks() {
+            while (gameState.hands.south.length > 0) {
+                // Si només queda una carta a cada jugador, jugar-les automàticament
+                if (gameState.hands.south.length === 1) {
+                    await playLastCardsAutomatically();
+                    break;
+                }
+                await playOneTrick();
+            }
+            
+            await endHand();
+        }
+
+        async function playLastCardsAutomatically() {
+            gameState.currentTrick = [];
+            gameState.trickLeadSuit = null;
+            
+            showMessage('Última basa', 'Es juguen les cartes automàticament', 1500);
+            await delay(500);
+            
+            // Jugar les cartes en ordre, començant pel jugador actual
+            let player = gameState.currentPlayer;
+            for (let i = 0; i < 4; i++) {
+                const card = gameState.hands[player][0]; // L'única carta que queda
+                await delay(400);
+                await playCard(player, card);
+                player = getNextPlayer(player);
+            }
+            
+            // Determinar guanyador de la basa
+            const winningCard = findWinningCard(gameState.currentTrick, gameState.trickLeadSuit, gameState.trump);
+            const winnerEntry = gameState.currentTrick.find(t => 
+                t.suit === winningCard.suit && t.value === winningCard.value);
+            const winner = winnerEntry.player;
+            const winningTeam = getTeam(winner);
+            
+            const points = calculateTrickPoints(gameState.currentTrick);
+            gameState.tricksWon[winningTeam].push(...gameState.currentTrick);
+            
+            log(`${PLAYER_NAMES[winner]} guanya l'última basa (${points} punts)`);
+            
+            await delay(1000);
+            
+            // Netejar zona de joc
+            gameState.currentTrick = [];
+            renderPlayArea();
+        }
+
+        async function playOneTrick() {
+            gameState.currentTrick = [];
+            gameState.trickLeadSuit = null;
+            
+            for (let i = 0; i < 4; i++) {
+                updatePlayerActive();
+                renderHands();
+                
+                if (gameState.currentPlayer === 'south') {
+                    // Esperar que l'humà jugui
+                    await waitForHumanPlay();
+                } else {
+                    // Bot juga
+                    await delay(600);
+                    const card = botPlayCard(gameState.currentPlayer);
+                    await playCard(gameState.currentPlayer, card);
+                }
+            }
+            
+            // Determinar guanyador de la basa
+            const winningCard = findWinningCard(gameState.currentTrick, gameState.trickLeadSuit, gameState.trump);
+            const winnerEntry = gameState.currentTrick.find(t => 
+                t.suit === winningCard.suit && t.value === winningCard.value);
+            const winner = winnerEntry.player;
+            const winningTeam = getTeam(winner);
+            
+            const points = calculateTrickPoints(gameState.currentTrick);
+            gameState.tricksWon[winningTeam].push(...gameState.currentTrick);
+            
+            log(`${PLAYER_NAMES[winner]} guanya la basa (${points} punts)`);
+            
+            await delay(1000);
+            
+            // Netejar zona de joc
+            gameState.currentTrick = [];
+            renderPlayArea();
+            
+            // El guanyador comença la següent
+            gameState.currentPlayer = winner;
+        }
+
+        function waitForHumanPlay() {
+            return new Promise(resolve => {
+                const checkPlay = setInterval(() => {
+                    // La funció playCard resoldrà això
+                    if (gameState.currentPlayer !== 'south' || 
+                        gameState.currentTrick.length > 0 && 
+                        gameState.currentTrick[gameState.currentTrick.length - 1].player === 'south') {
+                        clearInterval(checkPlay);
+                        resolve();
+                    }
+                }, 100);
+            });
+        }
+
+        async function playCard(player, card) {
+            // Treure carta de la mà
+            const hand = gameState.hands[player];
+            const idx = hand.findIndex(c => c.suit === card.suit && c.value === card.value);
+            if (idx === -1) return;
+            hand.splice(idx, 1);
+            
+            // Primera carta estableix el pal de sortida
+            if (gameState.currentTrick.length === 0) {
+                gameState.trickLeadSuit = card.suit;
+            }
+            
+            // Afegir a la basa actual
+            gameState.currentTrick.push({
+                player,
+                suit: card.suit,
+                value: card.value
+            });
+            
+            log(`${PLAYER_NAMES[player]} juga ${CARD_NAMES[card.value]} de ${SUIT_NAMES[card.suit]}`);
+            
+            renderHands();
+            renderPlayArea();
+            
+            // Passar al següent jugador
+            gameState.currentPlayer = getNextPlayer(player);
+        }
+
+        async function endHand() {
+            gameState.phase = 'scoring';
+            
+            // Calcular punts
+            let nsPoints = 0;
+            let ewPoints = 0;
+            
+            gameState.tricksWon.ns.forEach(card => {
+                nsPoints += CARD_POINTS[card.value];
+            });
+            nsPoints += gameState.tricksWon.ns.length / 4;  // 1 punt per basa
+            
+            gameState.tricksWon.ew.forEach(card => {
+                ewPoints += CARD_POINTS[card.value];
+            });
+            ewPoints += gameState.tricksWon.ew.length / 4;
+            
+            // L'equip guanyador és el que passa de 36
+            let winningTeam = nsPoints > 36 ? 'ns' : 'ew';
+            let pointsWon = winningTeam === 'ns' ? nsPoints - 36 : ewPoints - 36;
+            pointsWon *= gameState.multiplier;
+            
+            if (winningTeam === 'ns') {
+                gameState.scores.ns += pointsWon;
+            } else {
+                gameState.scores.ew += pointsWon;
+            }
+            
+            updateScoreboard();
+            
+            const teamName = winningTeam === 'ns' ? 'Tu i Nord' : 'Est i Oest';
+            showMessage(
+                `${teamName} guanyen!`,
+                `+${pointsWon} punts (${winningTeam === 'ns' ? nsPoints : ewPoints} a ${winningTeam === 'ns' ? ewPoints : nsPoints})`,
+                3000
+            );
+            
+            log(`Mà acabada: NS ${nsPoints} - EW ${ewPoints}`, true);
+            log(`${teamName}: +${pointsWon} punts`, true);
+            
+            await delay(3000);
+            
+            // Comprovar fi de partida
+            if (gameState.scores.ns > 100 || gameState.scores.ew > 100) {
+                endGame();
+                return;
+            }
+            
+            // Següent mà
+            gameState.dealer = getNextPlayer(gameState.dealer);
+            await startNewHand();
+        }
+
+        function endGame() {
+            const winner = gameState.scores.ns > 100 ? 'Tu i Nord' : 'Est i Oest';
+            const isHumanWinner = gameState.scores.ns > 100;
+            
+            document.getElementById('winner-text').textContent = 
+                isHumanWinner ? '🎉 Victòria! 🎉' : 'Has perdut...';
+            document.getElementById('final-score').textContent = 
+                `Resultat final: ${gameState.scores.ns} - ${gameState.scores.ew}`;
+            document.getElementById('game-over').style.display = 'flex';
+        }
+
+        function resetGame() {
+            gameState.scores = { ns: 0, ew: 0 };
+            gameState.multiplier = 1;
+            document.getElementById('game-over').style.display = 'none';
+            document.getElementById('game-log').innerHTML = '';
+            updateScoreboard();
+            updateMultiplierDisplay();
+            startNewHand();
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        document.getElementById('start-button').addEventListener('click', startGame);
+        document.getElementById('btn-new-game').addEventListener('click', resetGame);
+
+        // Toggle del log
+        const logToggle = document.getElementById('log-toggle');
+        const gameLog = document.getElementById('game-log');
+        let logVisible = true;
+
+        logToggle.addEventListener('click', () => {
+            logVisible = !logVisible;
+            if (logVisible) {
+                gameLog.classList.remove('hidden');
+                logToggle.textContent = '📋 Amagar log';
+            } else {
+                gameLog.classList.add('hidden');
+                logToggle.textContent = '📋 Mostrar log';
+            }
+        });
+
+        // Amagar log per defecte en pantalles petites
+        function checkScreenSize() {
+            if (window.innerWidth <= 900) {
+                if (logVisible) {
+                    logVisible = false;
+                    gameLog.classList.add('hidden');
+                    logToggle.textContent = '📋 Mostrar log';
+                }
+            }
+        }
+
+        window.addEventListener('resize', checkScreenSize);
+        checkScreenSize();
+
+        // Botons de triomf
+        document.querySelectorAll('.trump-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const trump = btn.dataset.trump;
+                selectTrump(trump, 'south');
+            });
+        });
+
+        // Tecles ràpides
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && document.getElementById('start-screen').style.display !== 'none') {
+                startGame();
+            }
+        });
+    </script>
+</body>
+</html>
