@@ -896,6 +896,33 @@
             box-shadow: 0 0 10px var(--gold);
         }
 
+
+        /* Info Botifarra */
+        #info-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+        #info-toggle {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        #info-toggle:hover {
+            background: var(--burgundy);
+            box-shadow: 0 0 10px var(--gold);
+        }
+
         #game-log {
             /* width: 250px; */
             max-height: 200px;
@@ -1008,7 +1035,7 @@
             animation: collectCards 0.5s ease forwards;
         }
 
-        /* Responsive - Tablets */
+/* Responsive - Tablets */
         @media (max-width: 900px) {
             #log-toggle {
                 display: block;
@@ -1025,20 +1052,20 @@
             .title-container h1 {
                 font-size: 3rem;
             }
-            
-            .card {
-                width: 50px;
-                height: 72px;
+
+            /* Amagar mans dels bots */
+            #hand-north,
+            #hand-west,
+            #hand-east {
+                display: none !important;
             }
-            
-            .card .suit {
-                font-size: 1.4rem;
+
+            /* Amagar botó del log */
+            #log-container {
+                display: none;
             }
-            
-            .card .value {
-                font-size: 0.8rem;
-            }
-            
+
+            /* Header compacte */
             #scoreboard {
                 padding: 8px 15px;
                 gap: 15px;
@@ -1050,186 +1077,12 @@
             }
 
             .score-team-name {
-                font-size: 0.75rem;
-            }
-
-            #trump-display, #multiplier-display {
-                padding: 10px 15px;
-                top: 10px;
-            }
-
-            #trump-display .trump-suit {
-                font-size: 1.8rem;
-            }
-
-            #trump-display .trump-name {
-                font-size: 0.85rem;
-            }
-
-            #multiplier-display .value {
-                font-size: 1.4rem;
-            }
-
-            #log-container {
-                bottom: auto;
-                top: 70px;
-                left: 10px;
-            }
-
-            #log-toggle {
-                display: block;
-                padding: 6px 12px;
-                font-size: 0.75rem;
-            }
-
-            #game-log {
-                width: 180px;
-                max-height: 120px;
-                padding: 10px;
-                font-size: 0.75rem;
-            }
-
-            /* Mà del jugador humà en dues files */
-            #player-south {
-                bottom: 10px;
-            }
-
-            #player-south .hand {
-                flex-wrap: wrap;
-                justify-content: center;
-                max-width: 90vw;
-            }
-
-            #player-south .hand .card {
-                margin: 3px;
-            }
-
-            /* Altres jugadors */
-            #player-north {
-                top: 70px;
-            }
-
-            #player-north .hand .card {
-                width: 40px;
-                height: 58px;
-                margin: 0 -8px;
-            }
-
-            #player-north .hand .card .suit {
-                font-size: 1.2rem;
-            }
-
-            #player-west .hand-vertical .card,
-            #player-east .hand-vertical .card {
-                width: 38px;
-                height: 55px;
-                margin: -22px 0;
-            }
-
-            .player-name {
-                font-size: 0.9rem;
-                padding: 5px 12px;
-            }
-
-            /* Zona de joc més compacta */
-            #play-area {
-                width: 200px;
-                height: 200px;
-            }
-
-            .played-card-container .card {
-                width: 50px;
-                height: 72px;
-            }
-
-            .played-card-container.south { bottom: 10px; }
-            .played-card-container.north { top: 10px; }
-            .played-card-container.west { left: 10px; }
-            .played-card-container.east { right: 10px; }
-
-            /* Panells modals */
-            .trump-panel {
-                padding: 25px;
-                margin: 15px;
-                max-width: calc(100vw - 30px);
-            }
-
-            .trump-panel h2 {
-                font-size: 1.4rem;
-            }
-
-            .trump-options {
-                gap: 10px;
-            }
-
-            .trump-btn {
-                width: 70px;
-                height: 70px;
-                border-radius: 10px;
-            }
-
-            .trump-btn .suit-icon {
-                font-size: 1.8rem;
-            }
-
-            .trump-btn .suit-name {
                 font-size: 0.7rem;
-            }
-
-            .contro-content {
-                padding: 25px;
-                margin: 15px;
-            }
-
-            .contro-btn {
-                padding: 12px 25px;
-                font-size: 1rem;
-            }
-
-            #message-area {
-                padding: 15px 25px;
-                max-width: calc(100vw - 40px);
-            }
-
-            #message-area h3 {
-                font-size: 1.2rem;
-            }
-        }
-
-        /* Responsive - Mòbils molt petits */
-        @media (max-width: 480px) {
-            .card {
-                width: 42px;
-                height: 60px;
-            }
-
-            .card .suit {
-                font-size: 1.2rem;
-            }
-
-            .card .value {
-                font-size: 0.7rem;
-            }
-
-            #player-south .hand .card {
-                margin: 2px;
-            }
-
-            #scoreboard {
-                padding: 6px 12px;
-                gap: 10px;
-            }
-
-            .score-value {
-                font-size: 1.1rem;
-            }
-
-            .score-team-name {
-                font-size: 0.65rem;
             }
 
             #trump-display, #multiplier-display {
                 padding: 8px 12px;
+                top: 10px;
             }
 
             #trump-display .label,
@@ -1238,61 +1091,261 @@
             }
 
             #trump-display .trump-suit {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
+            }
+
+            #trump-display .trump-name {
+                font-size: 0.8rem;
             }
 
             #multiplier-display .value {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
             }
 
-            #player-north .hand .card {
-                width: 35px;
-                height: 50px;
-                margin: 0 -10px;
-            }
-
-            #player-west .hand-vertical .card,
-            #player-east .hand-vertical .card {
-                width: 32px;
-                height: 46px;
-                margin: -20px 0;
-            }
-
+            /* Noms dels jugadors amb comptador de bases */
             .player-name {
-                font-size: 0.8rem;
-                padding: 4px 10px;
+                font-size: 0.85rem;
+                padding: 5px 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
             }
 
+            .player-name .tricks-count {
+                background: var(--gold);
+                color: var(--burgundy-dark);
+                font-size: 0.7rem;
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-weight: 700;
+            }
+
+            /* Amagar piles visuals */
+            .won-tricks-pile {
+                display: none !important;
+            }
+
+            /* Posicions dels jugadors */
+            #player-north {
+                top: 70px;
+            }
+
+            #player-south {
+                bottom: 10px;
+            }
+
+            #player-west {
+                left: 10px;
+                top: 45%;
+            }
+
+            #player-east {
+                right: 10px;
+                top: 45%;
+            }
+
+            /* Noms Est i Oest verticals amb bases a sota */
+            #player-west,
+            #player-east {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #player-west .player-name,
+            #player-east .player-name {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            /* Mà del jugador humà: 2 files de 6 cartes */
+            #player-south .hand {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 4px;
+                max-width: 95vw;
+                justify-items: center;
+            }
+
+            #player-south .hand .card {
+                width: 48px;
+                height: 68px;
+                margin: 0;
+            }
+
+            #player-south .hand .card .suit {
+                font-size: 1.3rem;
+            }
+
+            #player-south .hand .card .value {
+                font-size: 0.75rem;
+            }
+
+            /* Zona de joc centrada */
             #play-area {
-                width: 160px;
-                height: 160px;
+                width: 180px;
+                height: 180px;
+                top: 45%;
             }
 
             .played-card-container .card {
-                width: 42px;
-                height: 60px;
+                width: 50px;
+                height: 70px;
+            }
+
+            .played-card-container .card .suit {
+                font-size: 1.4rem;
+            }
+
+            .played-card-container .card .value {
+                font-size: 0.8rem;
+            }
+
+            .played-card-container.south { bottom: 5px; }
+            .played-card-container.north { top: 5px; }
+            .played-card-container.west { left: 5px; }
+            .played-card-container.east { right: 5px; }
+
+            /* Panells modals */
+            .trump-panel {
+                padding: 20px;
+                margin: 15px;
+                max-width: calc(100vw - 30px);
+            }
+
+            .trump-panel h2 {
+                font-size: 1.3rem;
+            }
+
+            .trump-options {
+                gap: 8px;
             }
 
             .trump-btn {
-                width: 60px;
-                height: 60px;
+                width: 65px;
+                height: 65px;
+                border-radius: 10px;
             }
 
             .trump-btn .suit-icon {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
             }
 
+            .trump-btn .suit-name {
+                font-size: 0.65rem;
+            }
+
+            .trump-btn.botifarra,
+            .trump-btn.delegar {
+                padding: 10px;
+            }
+
+            .contro-content {
+                padding: 20px;
+                margin: 15px;
+            }
+
+            .contro-content h2 {
+                font-size: 1.3rem;
+            }
+
+            .contro-btn {
+                padding: 10px 25px;
+                font-size: 1rem;
+            }
+
+            #message-area {
+                padding: 12px 20px;
+                max-width: calc(100vw - 40px);
+            }
+
+            #message-area h3 {
+                font-size: 1.1rem;
+            }
+
+            /* Modal última basa */
+            .last-trick-content {
+                padding: 15px 20px;
+                margin: 10px;
+            }
+
+            .last-trick-cards {
+                gap: 6px;
+            }
+
+            .last-trick-cards .card {
+                width: 45px;
+                height: 65px;
+            }
+
+            .last-trick-cards .card .suit {
+                font-size: 1.2rem;
+            }
+
+            .last-trick-cards .card .value {
+                font-size: 0.7rem;
+            }
+
+            /* Game over */
             .game-over-content {
-                padding: 30px;
+                padding: 25px;
                 margin: 15px;
             }
 
             .game-over-content h2 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .game-over-content .final-score {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
+            }
+
+            .game-over-content button {
+                padding: 12px 30px;
+                font-size: 1rem;
+                min-width: 180px;
+            }
+        }
+
+        /* Responsive - Mòbils molt petits */
+        @media (max-width: 380px) {
+            #player-south .hand .card {
+                width: 42px;
+                height: 60px;
+            }
+
+            #player-south .hand .card .suit {
+                font-size: 1.1rem;
+            }
+
+            #player-south .hand .card .value {
+                font-size: 0.65rem;
+            }
+
+            .played-card-container .card {
+                width: 44px;
+                height: 62px;
+            }
+
+            #scoreboard {
+                padding: 6px 10px;
+                gap: 10px;
+            }
+
+            .score-value {
+                font-size: 1.1rem;
+            }
+
+            #trump-display, #multiplier-display {
+                padding: 6px 10px;
+            }
+
+            .trump-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .trump-btn .suit-icon {
+                font-size: 1.4rem;
             }
         }
     </style>
@@ -1311,6 +1364,9 @@
             <div class="decorative-card" style="--rotation: 15deg;">🌿</div>
         </div>
         <button id="start-button">Començar Partida</button>
+        <div id="info-container">
+            <button id="info-toggle">ⓘ Com es juga a la Botifarra</button>
+        </div>
     </div>
 
     <!-- Contenidor del joc -->
@@ -1741,12 +1797,43 @@
             });
         }
 
-        function renderWonPiles() {
+        // function renderWonPiles() {
+        //     PLAYERS.forEach(player => {
+        //         const pileEl = document.getElementById(`pile-${player}`);
+        //         const pileCards = pileEl.querySelector('.pile-cards');
+        //         const pileCount = pileEl.querySelector('.pile-count');
+        //         const tricks = gameState.tricksWonBy[player];
+                
+        //         if (tricks.length === 0) {
+        //             pileEl.style.display = 'none';
+        //             return;
+        //         }
+                
+        //         pileEl.style.display = 'block';
+        //         pileCards.innerHTML = '';
+                
+        //         // Mostrar cartes apilades (màxim 5 visibles per efecte visual)
+        //         const maxVisible = Math.min(tricks.length, 5);
+        //         for (let i = 0; i < maxVisible; i++) {
+        //             const cardBack = document.createElement('div');
+        //             cardBack.className = 'pile-card';
+        //             cardBack.style.top = (i * 2) + 'px';
+        //             cardBack.style.left = (i * 2) + 'px';
+        //             pileCards.appendChild(cardBack);
+        //         }
+                
+        //         pileCount.textContent = tricks.length + (tricks.length === 1 ? ' basa' : ' bases');
+        //     });
+        // }
+function renderWonPiles() {
             PLAYERS.forEach(player => {
                 const pileEl = document.getElementById(`pile-${player}`);
                 const pileCards = pileEl.querySelector('.pile-cards');
                 const pileCount = pileEl.querySelector('.pile-count');
                 const tricks = gameState.tricksWonBy[player];
+                
+                // Actualitzar comptador al nom del jugador (per mòbil)
+                updatePlayerTricksCount(player, tricks.length);
                 
                 if (tricks.length === 0) {
                     pileEl.style.display = 'none';
@@ -1770,6 +1857,32 @@
             });
         }
 
+        function updatePlayerTricksCount(player, count) {
+            const nameEl = document.getElementById(`name-${player}`);
+            let countEl = nameEl.querySelector('.tricks-count');
+            
+            if (count === 0) {
+                if (countEl) countEl.remove();
+                return;
+            }
+            
+            if (!countEl) {
+                countEl = document.createElement('span');
+                countEl.className = 'tricks-count';
+                nameEl.appendChild(countEl);
+            }
+            
+            countEl.textContent = count + (count === 1 ? ' basa' : ' bases');
+            
+            // Afegir event listener per veure última basa
+            countEl.style.cursor = 'pointer';
+            countEl.onclick = (e) => {
+                e.stopPropagation();
+                showLastTrick(player);
+            };
+        }
+
+        
         function showLastTrick(player) {
             const lastTrick = gameState.lastTrickBy[player];
             if (!lastTrick) return;
@@ -2195,6 +2308,12 @@
             updateMultiplierDisplay();
             renderPlayArea();
             renderWonPiles();
+
+            // Netejar comptadors de bases dels noms
+            PLAYERS.forEach(player => {
+                const countEl = document.getElementById(`name-${player}`).querySelector('.tricks-count');
+                if (countEl) countEl.remove();
+            });
             
             dealCards();
             renderHands();
@@ -2650,8 +2769,11 @@
 
         // ==================== EVENT LISTENERS ====================
         document.getElementById('start-button').addEventListener('click', startGame);
+        document.getElementById('start-button').addEventListener('click', startGame);
         document.getElementById('btn-new-game').addEventListener('click', resetGame);
-        document.getElementById('btn-main-menu').addEventListener('click', goToMainMenu);
+        document.getElementById('info-toggle').addEventListener('click', () => {
+            window.location.href = '/infografia.html'; // Substitueix amb la URL desitjada
+        });
 
         // Toggle del log
         const logToggle = document.getElementById('log-toggle');
