@@ -1,0 +1,310 @@
+
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografia: Com jugar a la Botifarra</title>
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            scroll-behavior: smooth;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+        }
+        .step-line::after {
+            content: '';
+            position: absolute;
+            top: 2rem;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: -1;
+        }
+        @media (max-width: 1024px) {
+            .step-line::after { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-900 pb-24">
+
+    <!-- HEADER -->
+    <header class="bg-gradient-to-br from-red-700 via-red-600 to-amber-500 py-16 px-6 text-white text-center shadow-xl rounded-b-[3rem] mb-12">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter uppercase italic">La Botifarra</h1>
+        <p class="text-xl md:text-2xl font-light max-w-2xl mx-auto opacity-95 leading-relaxed">
+            La guia definitiva per dominar el joc de cartes més popular de Catalunya.
+        </p>
+        <div class="mt-10 flex justify-center gap-4 flex-wrap">
+            <div class="bg-white/20 backdrop-blur-xl px-5 py-2.5 rounded-2xl flex items-center gap-3 border border-white/30">
+                <i data-lucide="users" class="w-5 h-5"></i>
+                <span class="font-semibold">4 Jugadors</span>
+            </div>
+            <div class="bg-white/20 backdrop-blur-xl px-5 py-2.5 rounded-2xl flex items-center gap-3 border border-white/30">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+                <span class="font-semibold">48 Cartes</span>
+            </div>
+            <div class="bg-white/20 backdrop-blur-xl px-5 py-2.5 rounded-2xl flex items-center gap-3 border border-white/30">
+                <i data-lucide="trophy" class="w-5 h-5"></i>
+                <span class="font-semibold">Objectiu: 101</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 space-y-16">
+
+        <!-- EL FLUX DE LA PARTIDA -->
+        <section>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-black uppercase tracking-tight text-stone-800 flex items-center justify-center gap-3">
+                    <i data-lucide="refresh-cw" class="text-red-600"></i>
+                    Flux de la Partida
+                </h2>
+                <p class="text-stone-500 mt-2">El recorregut des del repartiment fins a la victòria</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="relative flex flex-col items-center text-center group step-line">
+                    <div class="w-20 h-20 rounded-3xl bg-white shadow-lg border border-stone-100 flex items-center justify-center text-3xl mb-6 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                        🎴
+                    </div>
+                    <h3 class="font-bold text-xl mb-3 text-stone-800">1. Repartir</h3>
+                    <p class="text-sm text-stone-600 leading-relaxed px-4">48 cartes en parelles. Es donen de 4 en 4 fins a tenir-ne 12 cada jugador.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="relative flex flex-col items-center text-center group step-line">
+                    <div class="w-20 h-20 rounded-3xl bg-white shadow-lg border border-stone-100 flex items-center justify-center text-3xl mb-6 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                        👑
+                    </div>
+                    <h3 class="font-bold text-xl mb-3 text-stone-800">2. Triar Triomf</h3>
+                    <p class="text-sm text-stone-600 leading-relaxed px-4">Qui reparteix tria el pal de triomf o passa el torn al seu company.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="relative flex flex-col items-center text-center group step-line">
+                    <div class="w-20 h-20 rounded-3xl bg-white shadow-lg border border-stone-100 flex items-center justify-center text-3xl mb-6 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                        ⚡
+                    </div>
+                    <h3 class="font-bold text-xl mb-3 text-stone-800">3. Contrar</h3>
+                    <p class="text-sm text-stone-600 leading-relaxed px-4">La parella contrària pot duplicar els punts dient "Contro!".</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="relative flex flex-col items-center text-center group">
+                    <div class="w-20 h-20 rounded-3xl bg-white shadow-lg border border-stone-100 flex items-center justify-center text-3xl mb-6 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                        ⚔️
+                    </div>
+                    <h3 class="font-bold text-xl mb-3 text-stone-800">4. Jugar</h3>
+                    <p class="text-sm text-stone-600 leading-relaxed px-4">S'ha de seguir el pal. És obligatori matar al contrari si es pot.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VALOR DE LES CARTES -->
+        <section class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-stone-200">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-10">
+                <div class="flex items-center gap-4 text-red-700">
+                    <i data-lucide="calculator" class="w-10 h-10"></i>
+                    <div>
+                        <h2 class="text-3xl font-black uppercase tracking-tight">Puntuació</h2>
+                        <p class="text-stone-500 font-medium">Quant val cada carta?</p>
+                    </div>
+                </div>
+                <div class="bg-amber-100 text-amber-800 px-6 py-3 rounded-2xl font-bold border border-amber-200 text-center">
+                    Total mà: 72 punts
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+                <!-- Card 5 -->
+                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
+                    <div class="text-4xl font-black text-amber-900 mb-1">9</div>
+                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">Manilla</div>
+                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">5</div>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
+                    <div class="text-4xl font-black text-amber-900 mb-1">1</div>
+                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">As</div>
+                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">4</div>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
+                    <div class="text-4xl font-black text-amber-900 mb-1">12</div>
+                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">Rei</div>
+                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">3</div>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
+                    <div class="text-4xl font-black text-amber-900 mb-1">11</div>
+                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">Cavall</div>
+                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">2</div>
+                </div>
+                <!-- Card 1 -->
+                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
+                    <div class="text-4xl font-black text-amber-900 mb-1">10</div>
+                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">Sota</div>
+                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">1</div>
+                </div>
+                <!-- Card 0 -->
+                <div class="bg-stone-50 border-2 border-stone-100 p-6 rounded-[2rem] text-center opacity-60">
+                    <div class="text-4xl font-black text-stone-400 mb-1">2-8</div>
+                    <div class="text-sm font-bold text-stone-400 uppercase tracking-widest mb-4">Altres</div>
+                    <div class="bg-white rounded-full py-1 text-2xl font-black text-stone-300 shadow-sm border border-stone-50">0</div>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-6 bg-stone-50 rounded-2xl flex items-start gap-4 border border-stone-100">
+                <i data-lucide="info" class="text-amber-600 shrink-0 w-6 h-6 mt-1"></i>
+                <p class="text-stone-600 text-sm leading-relaxed italic">
+                    <strong>Puntuació de la mà:</strong> Es sumen els punts de les cartes i es s'afegeix <strong>1 punt per cada basa</strong> guanyada (12 bases en total). El resultat final és la diferència respecte 36.
+                </p>
+            </div>
+        </section>
+
+        <!-- REGLES DE JOC -->
+        <section class="grid lg:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-[2rem] border border-stone-200 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 text-blue-700">
+                    <i data-lucide="sword" class="w-8 h-8"></i>
+                    <h3 class="text-2xl font-black uppercase">Si guanya el contrari</h3>
+                </div>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
+                        <i data-lucide="check-circle" class="text-red-600 shrink-0 w-5 h-5 mt-1"></i>
+                        <span class="text-stone-700">Has de seguir el pal i estàs <strong>obligat a matar</strong> si tens una carta millor.</span>
+                    </li>
+                    <li class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
+                        <i data-lucide="check-circle" class="text-red-600 shrink-0 w-5 h-5 mt-1"></i>
+                        <span class="text-stone-700">Si no tens el pal, has de matar amb <strong>Triomf</strong>.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-white p-8 rounded-[2rem] border border-stone-200 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 text-green-700">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                    <h3 class="text-2xl font-black uppercase">Si guanya el company</h3>
+                </div>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3 p-4 bg-green-50 rounded-xl border border-green-100">
+                        <i data-lucide="check-circle" class="text-green-600 shrink-0 w-5 h-5 mt-1"></i>
+                        <span class="text-stone-700">Has de seguir el pal, però <strong>no cal matar</strong> la seva carta.</span>
+                    </li>
+                    <li class="flex items-start gap-3 p-4 bg-green-50 rounded-xl border border-green-100">
+                        <i data-lucide="check-circle" class="text-green-600 shrink-0 w-5 h-5 mt-1"></i>
+                        <span class="text-stone-700">Si no tens el pal, pots tirar <strong>qualsevol carta</strong> per ajudar (carregar punts).</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- MULTIPLICADORS -->
+        <section class="bg-stone-900 text-white p-10 md:p-14 rounded-[3rem] shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
+                <i data-lucide="zap" class="w-64 h-64"></i>
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-4 mb-10 text-yellow-400">
+                    <i data-lucide="zap" class="w-10 h-10"></i>
+                    <h2 class="text-3xl font-black uppercase italic">Multiplicadors</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-center">
+                        <div class="text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">Mà Normal</div>
+                        <div class="text-4xl font-black text-white">x1</div>
+                    </div>
+                    <div class="bg-amber-900/20 p-6 rounded-2xl border border-amber-600/30 text-center">
+                        <div class="text-amber-400 text-xs font-bold uppercase tracking-widest mb-2">Botifarra</div>
+                        <div class="text-4xl font-black text-white">x2</div>
+                        <div class="text-stone-500 text-[10px] mt-2 italic">Sense triomf</div>
+                    </div>
+                    <div class="bg-red-900/20 p-6 rounded-2xl border border-red-600/30 text-center">
+                        <div class="text-red-400 text-xs font-bold uppercase tracking-widest mb-2">Contro</div>
+                        <div class="text-4xl font-black text-white">x2 / x4</div>
+                        <div class="text-stone-500 text-[10px] mt-2 italic">La parella que no tria</div>
+                    </div>
+                    <div class="bg-purple-900/20 p-6 rounded-2xl border border-purple-600/30 text-center">
+                        <div class="text-purple-400 text-xs font-bold uppercase tracking-widest mb-2">Recontro</div>
+                        <div class="text-4xl font-black text-white">x4 / x8</div>
+                        <div class="text-stone-500 text-[10px] mt-2 italic">La parella que ha triat</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ALERTES / RENUNCIS -->
+        <section class="bg-red-50 border-2 border-red-200 rounded-[2.5rem] p-10">
+            <div class="flex items-center gap-4 mb-8 text-red-800">
+                <i data-lucide="shield-alert" class="w-10 h-10"></i>
+                <h2 class="text-3xl font-black uppercase italic">Vigila les faltes!</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <h4 class="text-xl font-bold text-red-900 mb-4 flex items-center gap-2">
+                        <i data-lucide="alert-triangle" class="w-5 h-5"></i> El Renunci
+                    </h4>
+                    <p class="text-red-800 leading-relaxed text-sm">
+                        Si no segueixes el pal o no mates quan és obligatori, es comet un "renunci". La parella contrària guanya automàticament:
+                    </p>
+                    <div class="mt-4 space-y-2">
+                        <div class="bg-white/60 p-3 rounded-xl border border-red-200 flex justify-between items-center text-sm font-bold">
+                            <span>Mà Normal</span>
+                            <span class="text-red-700">36 Punts</span>
+                        </div>
+                        <div class="bg-white/60 p-3 rounded-xl border border-red-200 flex justify-between items-center text-sm font-bold">
+                            <span>Mà amb Multiplicadors</span>
+                            <span class="text-red-700">72 Punts</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl border border-red-100 shadow-sm flex flex-col justify-center">
+                    <h4 class="text-xl font-bold text-stone-800 mb-3 flex items-center gap-2">
+                        <i data-lucide="message-square" class="w-5 h-5 text-stone-400"></i> Prohibit parlar
+                    </h4>
+                    <p class="text-stone-600 text-sm leading-relaxed">
+                        No es poden fer senyals ni parlar sobre les cartes que es tenen a la mà. Qualsevol comentari sospitós pot ser considerat falta!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center py-16 border-t border-stone-200 text-stone-400">
+            <p class="text-sm font-medium">© <span id="year"></span> — Infografia Interactiva de la Botifarra</p>
+            <p class="text-xs mt-2 italic">Creat amb passió per al joc de cartes més gran de la nostra terra.</p>
+        </footer>
+
+    </main>
+
+    <!-- STICKY QUICK REFERENCE -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-stone-200 p-4 shadow-2xl z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center text-[10px] sm:text-xs font-bold uppercase tracking-widest text-stone-500">
+            <div class="flex gap-4 md:gap-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Manilla: 5</span>
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>As: 4</span>
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Rei: 3</span>
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Cavall: 2</span>
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Sota: 1</span>
+            </div>
+            <div class="bg-red-700 text-white px-4 py-1.5 rounded-full shadow-lg border border-red-800 shrink-0 ml-4">
+                Objectiu 101
+            </div>
+        </div>
+    </div>
+
+    <!-- INITIALIZATION SCRIPT -->
+    <script>
+        // Inicializar iconos
+        lucide.createIcons();
+        
+        // Actualizar año en el footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

@@ -970,6 +970,13 @@
             margin-bottom: 30px;
         }
 
+        .game-over-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
         .game-over-content button {
             padding: 15px 40px;
             font-size: 1.2rem;
@@ -980,11 +987,13 @@
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-width: 200px;
         }
 
         .game-over-content button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--gold);
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
         }
 
         /* Animació de recollir basa */
@@ -1446,11 +1455,21 @@
     </div>
 
     <!-- Final de partida -->
-    <div id="game-over">
+    <!-- <div id="game-over">
         <div class="game-over-content">
             <h2 id="winner-text">Victòria!</h2>
             <div class="final-score" id="final-score"></div>
             <button id="btn-new-game">Nova Partida</button>
+        </div>
+    </div> -->
+    <div id="game-over">
+        <div class="game-over-content">
+            <h2 id="winner-text">Victòria!</h2>
+            <div class="final-score" id="final-score"></div>
+            <div class="game-over-buttons">
+                <button id="btn-new-game">Nova Partida</button>
+                <button id="btn-main-menu">Menú Principal</button>
+            </div>
         </div>
     </div>
 
@@ -2616,6 +2635,15 @@
             startNewHand();
         }
 
+        function goToMainMenu() {
+            gameState.scores = { ns: 0, ew: 0 };
+            gameState.multiplier = 1;
+            document.getElementById('game-over').style.display = 'none';
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'flex';
+            document.getElementById('game-log').innerHTML = '';
+        }
+
         function delay(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
@@ -2623,6 +2651,7 @@
         // ==================== EVENT LISTENERS ====================
         document.getElementById('start-button').addEventListener('click', startGame);
         document.getElementById('btn-new-game').addEventListener('click', resetGame);
+        document.getElementById('btn-main-menu').addEventListener('click', goToMainMenu);
 
         // Toggle del log
         const logToggle = document.getElementById('log-toggle');
