@@ -313,7 +313,7 @@
         }
 
         .player-name.dealer::after {
-            content: ' 🎴';
+            content: ' ✋';
         }
 
         /* Posicions dels jugadors */
