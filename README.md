@@ -10,9 +10,10 @@ La **Botifarra** és un joc de cartes popular a Catalunya que es juga amb 4 juga
 
 - 🎮 **Joc complet**: Implementació fidel al reglament oficial
 - 🤖 **IA intel·ligent**: Els bots prenen decisions estratègiques
-- 📱 **Responsive**: Adaptat per a escriptori, tauleta i mòbil
-- 🎨 **Disseny elegant**: Interfície visual amb temàtica tradicional
+- 📱 **Responsive**: Disseny optimitzat per a escriptori, tauleta i mòbil
+- 🎨 **Disseny elegant**: Interfície visual amb temàtica tradicional catalana
 - 💾 **Sense dependències**: Funciona amb un sol arxiu HTML
+- 📊 **Estadístiques**: Resum detallat de cada mà al final de la partida
 
 ## 🎯 Regles del Joc
 
@@ -75,13 +76,16 @@ El repartidor pot:
      - Si no tens el pal: jugar triomf que mati
      - Si no pots matar: jugar qualsevol carta
 
-#### 5. Puntuació
+#### 5. Última Basa
+- Quan només queda una carta a cada jugador, es juguen automàticament
+
+#### 6. Puntuació
 - La parella que passa de 36 punts guanya la mà
 - S'anoten els punts per sobre de 36, multiplicats segons contro/recontro/Sant Vicenç
 
 ## 🖥️ Interfície
 
-### Elements de Pantalla
+### Elements de Pantalla (Escriptori)
 
 - **Marcador**: Puntuació de cada parella (a dalt al centre)
 - **Triomf**: Pal escollit per la mà actual (a dalt a la dreta)
@@ -90,10 +94,18 @@ El repartidor pot:
 - **Piles de bases**: Cartes guanyades per cada jugador (al costat de cada jugador)
 - **Log**: Historial de jugades (a baix a l'esquerra, es pot amagar)
 
+### Elements de Pantalla (Mòbil)
+
+- **Vista simplificada**: Només es mostren les cartes del jugador humà
+- **Comptador de bases**: Integrat al nom de cada jugador
+- **Mà en graella**: 2 files de 6 cartes per millor visualització
+- **Log ocult**: Per defecte amagat per maximitzar l'espai
+
 ### Interaccions
 
 - **Clicar carta**: Jugar una carta (només les jugables es poden seleccionar)
 - **Clicar pila de bases**: Veure l'última basa guanyada per aquell jugador
+- **Clicar comptador de bases (mòbil)**: Veure l'última basa guanyada
 - **Botons de triomf**: Escollir triomf quan et toca
 - **Botons de contro**: Decidir si contrar/recontrar
 
@@ -103,34 +115,54 @@ El repartidor pot:
 - 🎴 **Emoji al nom**: Indica qui ha repartit
 - ⭐ **Estrella a última basa**: Indica el guanyador de la basa
 
+## 📊 Resum de Partida
+
+Al final de cada partida es mostra un resum detallat amb:
+
+- **Marcador final**: Puntuació total de cada equip
+- **Taula d'historial**: Per cada mà jugada:
+  - Número de mà
+  - Triomf escollit
+  - Multiplicador aplicat
+  - Bases guanyades per equip
+  - Punts de figures per equip
+  - Total de punts per equip
+  - Punts anotats
+
 ## 📱 Versió Mòbil
 
 La interfície s'adapta automàticament a pantalles petites:
 
-- Les cartes del jugador humà es mostren en dues files
-- El log es pot amagar amb un botó
-- Les piles de bases es reposicionen
-- Tots els elements es redimensionen proporcionalment
+- **Mans dels bots ocultes**: Més espai per la zona de joc
+- **Cartes en graella 2×6**: Millor visualització de la mà
+- **Comptadors integrats**: Les bases guanyades es mostren al nom
+- **Log amagat**: Més espai disponible
+- **Scroll horitzontal**: A la taula de resum si cal
+- **Modals adaptats**: Panells de selecció optimitzats
 
 ## 🛠️ Tecnologies
 
 - **HTML5**: Estructura
-- **CSS3**: Estils i animacions
+- **CSS3**: Estils, animacions i disseny responsive
 - **JavaScript**: Lògica del joc i IA
 - **Google Fonts**: Tipografies (Playfair Display, Source Sans Pro)
 
 ## 📁 Arxius
 
 ```
-index.html    # Aplicació completa (únic arxiu necessari)
+botifarra.html    # Aplicació completa (únic arxiu necessari)
 README.md         # Aquest document
 ```
 
 ## 🚀 Com Jugar
 
-1. Obre l'arxiu `index.html` amb qualsevol navegador modern
+1. Obre l'arxiu `botifarra.html` amb qualsevol navegador modern
 2. Clica "Començar Partida"
 3. Juga!
+
+**Opcions al final de partida:**
+- **Nova Partida**: Començar una nova partida amb el marcador reiniciat
+- **Menú Principal**: Tornar a la pantalla inicial
 
 No cal servidor web, connexió a internet (després de carregar), ni instal·lació.
 
@@ -169,11 +201,11 @@ Aquest joc segueix el reglament de la Botifarra en la seva versió "lliure" o "o
 - ✅ Partida a 101 punts
 - ✅ Última basa jugada automàticament
 - ✅ Possibilitat de revisar l'última basa guanyada
+- ✅ Resum detallat de la partida
 
 ## 🐛 Problemes Coneguts
 
 - En pantalles molt petites (<320px) alguns elements poden solapar-se
-- L'última basa només es pot consultar fins que es guanya una nova
 
 ## 📄 Llicència
 

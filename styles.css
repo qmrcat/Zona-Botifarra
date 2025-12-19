@@ -1,0 +1,1798 @@
+        :root {
+            --gold: #C9A227;
+            --gold-light: #E8D48B;
+            --burgundy: #6B1C23;
+            --burgundy-dark: #4A1219;
+            --cream: #F5F0E1;
+            --cream-dark: #E8DFC8;
+            --green-felt: #1B5E20;
+            --green-felt-dark: #0D3B0F;
+            --card-white: #FFFEF8;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: radial-gradient(ellipse at center, var(--green-felt) 0%, var(--green-felt-dark) 100%);
+            min-height: 100vh;
+            color: var(--cream);
+            overflow: hidden;
+        }
+
+        /* Textura de feltre */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Pantalla d'inici */
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 50%, var(--burgundy-dark) 100%);
+        }
+
+        #start-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L35 25H55L39 38L45 58L30 45L15 58L21 38L5 25H25L30 5Z' fill='%23C9A227' fill-opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .title-container {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title-container h1 {
+            font-size: 5rem;
+            color: var(--gold);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .title-container p {
+            font-size: 1.3rem;
+            color: var(--gold-light);
+            font-style: italic;
+            letter-spacing: 0.2em;
+        }
+
+        .decorative-cards {
+            display: flex;
+            gap: -20px;
+            margin-bottom: 3rem;
+            animation: fadeIn 1.5s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .decorative-card {
+            width: 80px;
+            height: 120px;
+            background: var(--card-white);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            transform: rotate(var(--rotation));
+            margin-left: -15px;
+            border: 2px solid var(--gold);
+        }
+
+        .decorative-card:first-child {
+            margin-left: 0;
+        }
+
+        #start-button {
+            padding: 1.2rem 4rem;
+            font-size: 1.4rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+            color: var(--burgundy-dark);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(201, 162, 39, 0.4);
+            animation: fadeIn 1.5s ease-out 0.6s both;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        #start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(201, 162, 39, 0.6);
+        }
+
+        /* Taula de joc */
+        #game-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Marcador */
+        #scoreboard {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 15px 40px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 5px 20px var(--shadow);
+            display: flex;
+            gap: 40px;
+            z-index: 100;
+        }
+
+        .score-team {
+            text-align: center;
+        }
+
+        .score-team-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            color: var(--gold-light);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .score-divider {
+            width: 2px;
+            background: var(--gold);
+            opacity: 0.5;
+        }
+
+        /* Zona de triomf */
+        #trump-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            z-index: 100;
+        }
+
+        #trump-display .label {
+            font-size: 0.8rem;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
+        }
+
+        #trump-display .trump-suit {
+            font-size: 2.5rem;
+        }
+
+        #trump-display .trump-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--gold);
+        }
+
+        /* Multiplicador */
+        #multiplier-display {
+            position: absolute;
+            top: 20px;
+            left: 13px;
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            z-index: 100;
+        }
+
+        #multiplier-display .label {
+            font-size: 2.5rem;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
+        }
+
+        #multiplier-display .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        /* Jugadors */
+        .player-area {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .player-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--gold);
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+
+            /* .player-name {
+                background: var(--gold);
+                color: var(--burgundy-dark);
+                font-size: 0.7rem;
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-weight: 700;
+            } */
+            .tricks-count {
+                background: var(--gold);
+                color: var(--burgundy-dark);
+                font-size: 0.7rem;
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-weight: 700;
+                margin: 0 10px;
+                padding-left: 10px;
+                font-size: 0.8rem;
+            }
+
+        .player-name.active {
+            box-shadow: 0 0 20px var(--gold);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px var(--gold); }
+            50% { box-shadow: 0 0 30px var(--gold), 0 0 40px var(--gold); }
+        }
+
+        .player-name.dealer::after {
+            content: ' 🎴';
+        }
+
+        /* Posicions dels jugadors */
+        #player-south {
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+        }
+
+        #player-north {
+            top: 125px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #player-west {
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #player-east {
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Cartes */
+        .card {
+            width: 70px;
+            height: 100px;
+            background: var(--card-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border: 1px solid #ddd;
+            user-select: none;
+        }
+
+        .card.card-back {
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-dark) 100%);
+            border: 2px solid var(--gold);
+        }
+
+        .card.card-back::before {
+            content: '🏵️';
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+
+        .card .suit {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .card .value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .card.oros .suit { color: #FFD700; }
+        .card.copes .suit { color: #C41E3A; }
+        .card.espases .suit { color: #4169E1; }
+        .card.bastos .suit { color: #228B22; }
+
+        .card.playable:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 30px var(--shadow);
+        }
+
+        .card.playable {
+            cursor: pointer;
+        }
+
+        .card:not(.playable) {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .card.selected {
+            transform: translateY(-20px);
+            box-shadow: 0 0 20px var(--gold), 0 15px 30px var(--shadow);
+        }
+
+        /* Mà del jugador */
+        .hand {
+            display: flex;
+            justify-content: center;
+        }
+
+        .hand .card {
+            margin: 0 -10px;
+            transition: all 0.2s ease;
+        }
+
+        .hand-horizontal {
+            flex-direction: row;
+            z-index: 100;
+        }
+
+        .hand-vertical {
+            flex-direction: column;
+            padding-top: 25px;
+        }
+
+        .hand-vertical .card {
+            margin: -30px 0;
+        }
+
+        #player-west .hand-vertical .card,
+        #player-east .hand-vertical .card {
+            width: 50px;
+            height: 75px;
+        }
+
+        #player-north .hand .card {
+            width: 55px;
+            height: 80px;
+        }
+
+        /* Zona central de joc */
+        #play-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 25px;
+        }
+
+        .played-card-container {
+            position: absolute;
+        }
+
+        .played-card-container.south { bottom: 20px; }
+        .played-card-container.north { top: 40px; }
+        .played-card-container.west { left: 20px; }
+        .played-card-container.east { right: 20px; }
+
+        .played-card-container .card {
+            cursor: default;
+        }
+
+        /* Panell de selecció de triomf */
+        #trump-selection {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .trump-panel {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid var(--gold);
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .trump-panel h2 {
+            color: var(--gold);
+            margin-bottom: 0;
+            font-size: 1.8rem;
+        }
+
+        .trump-panel p {
+            color: var(--gold-light);
+            margin-bottom: 5px;
+        }
+
+        .trump-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .trump-btn {
+            width: 90px;
+            height: 90px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            background: var(--card-white);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .trump-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        .trump-btn .suit-icon {
+            font-size: 2.5rem;
+        }
+
+        .trump-btn .suit-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .trump-btn.botifarra {
+            width: 100%;
+            height: auto;
+            padding: 15px;
+            flex-direction: row;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        }
+
+        .trump-btn.botifarra .suit-name {
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .trump-btn.delegar {
+            width: 100%;
+            height: auto;
+            padding: 15px;
+            background: var(--cream-dark);
+        }
+
+        .trump-btn.delegar .suit-name {
+            font-size: 1rem;
+        }
+
+        /* Panell de contro */
+        #contro-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .contro-content {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid var(--gold);
+            text-align: center;
+        }
+
+        .contro-content h2 {
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .contro-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .contro-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .contro-btn.yes {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--burgundy-dark);
+        }
+
+        .contro-btn.no {
+            background: transparent;
+            color: var(--gold);
+        }
+
+        .contro-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Missatges */
+        #message-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            z-index: 500;
+            display: none;
+            animation: messageAppear 0.3s ease;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        #message-area h3 {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        #message-area p {
+            color: var(--gold-light);
+        }
+
+        /* Piles de cartes guanyades */
+        .won-tricks-pile {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .won-tricks-pile:hover {
+            transform: scale(1.05);
+        }
+
+        .won-tricks-pile .pile-cards {
+            position: relative;
+            width: 50px;
+            height: 72px;
+        }
+
+        .won-tricks-pile .pile-card {
+            position: absolute;
+            width: 50px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-dark) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 6px;
+            box-shadow: 0 2px 5px var(--shadow);
+        }
+
+        .won-tricks-pile .pile-count {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--burgundy-dark);
+            color: var(--gold);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 1px solid var(--gold);
+            white-space: nowrap;
+        }
+
+        #pile-south {
+            bottom: 130px;
+            right: 30px;
+        }
+
+        #pile-north {
+            top: 180px;
+            left: 30px;
+        }
+
+        #pile-west {
+            bottom: 30px;
+            left: 120px;
+        }
+
+        #pile-east {
+            bottom: 70px;
+            right: 30px;
+        }
+
+        /* Modal per veure última basa */
+        #last-trick-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+            cursor: pointer;
+        }
+
+        .last-trick-content {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 30px 40px;
+            border-radius: 20px;
+            border: 3px solid var(--gold);
+            text-align: center;
+        }
+
+        .last-trick-content h3 {
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .last-trick-cards {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .last-trick-card-container {
+            text-align: center;
+        }
+
+        .last-trick-card-container .card {
+            cursor: default;
+        }
+
+        .last-trick-card-container .player-label {
+            font-size: 0.8rem;
+            color: var(--gold-light);
+            margin-top: 8px;
+        }
+
+        .last-trick-card-container .player-label.winner {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .last-trick-hint {
+            color: var(--gold-light);
+            font-size: 0.85rem;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        /* Responsive per les piles */
+        @media (max-width: 768px) {
+            .won-tricks-pile .pile-cards {
+                width: 40px;
+                height: 58px;
+            }
+
+            .won-tricks-pile .pile-card {
+                width: 40px;
+                height: 58px;
+            }
+
+            .won-tricks-pile .pile-count {
+                font-size: 0.65rem;
+                padding: 2px 6px;
+                bottom: -22px;
+            }
+
+            #pile-south {
+                bottom: 130px;
+                right: 30px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            #pile-north {
+                top: 50%;
+                left: 10px;
+                transform: translateY(-80%);
+            }
+
+            #pile-west {
+                bottom: auto;
+                top: 35%;
+                left: 10px;
+            }
+
+            #pile-east {
+                bottom: auto;
+                top: 35%;
+                right: 10px;
+            }
+
+            .last-trick-content {
+                padding: 20px 25px;
+                margin: 15px;
+            }
+
+            .last-trick-cards {
+                gap: 8px;
+            }
+
+            .last-trick-cards .card {
+                width: 50px;
+                height: 72px;
+            }
+
+            .last-trick-cards .card .suit {
+                font-size: 1.4rem;
+            }
+
+            .last-trick-cards .card .value {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .won-tricks-pile .pile-cards {
+                width: 35px;
+                height: 50px;
+            }
+
+            .won-tricks-pile .pile-card {
+                width: 35px;
+                height: 50px;
+            }
+
+            #pile-south {
+                right: 5px;
+            }
+
+            #pile-north {
+                left: 5px;
+            }
+
+            .last-trick-cards .card {
+                width: 42px;
+                height: 60px;
+            }
+
+            .last-trick-cards .card .suit {
+                font-size: 1.2rem;
+            }
+
+            .last-trick-cards .card .value {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Log de partida */
+        #log-container {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            z-index: 0;
+        }
+
+        #log-toggle {
+            display: none;
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        #log-toggle:hover {
+            background: var(--burgundy);
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+
+        /* Info Botifarra */
+        #info-container {
+            /* position: absolute; */
+            /* bottom: 20px;
+            left: 20px; */
+            padding-top: 30px;
+            z-index: 100;
+            animation: fadeIn 1.8s ease-out 0.9s both;
+        }
+        #info-toggle {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 0.7rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        #info-toggle:hover {
+            background: var(--burgundy);
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        #game-log {
+            width: 160px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            scrollbar-width: none; /* Per a Firefox */
+        }
+
+        #game-log::-webkit-scrollbar {
+            display: none; /* Per a navegadors basats en WebKit */
+        }
+
+        #game-log.hidden {
+            display: none;
+        }
+
+        #game-log::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #game-log::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 5px;
+        }
+
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--cream);
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-entry.important {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* Final de partida */
+        #game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .game-over-content {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            padding: 30px;
+            border-radius: 25px;
+            border: 3px solid var(--gold);
+            text-align: center;
+            animation: fadeInDown 0.5s ease;
+        }
+
+        .game-over-content h2 {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .game-over-content .final-score {
+            font-size: 2rem;
+            color: var(--gold-light);
+            margin-bottom: 30px;
+        }
+
+        .game-over-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .final-scoreboard {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin: 25px 0;
+            padding: 20px 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            border: 1px solid var(--gold);
+        }
+
+        .final-team {
+            text-align: center;
+        }
+
+        .final-team-name {
+            font-size: 0.9rem;
+            color: var(--gold-light);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .final-team-score {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .final-team-score.winner {
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .final-divider {
+            font-size: 2rem;
+            color: var(--gold);
+            opacity: 0.5;
+        }
+
+        .final-scoreboard {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin: 20px 0;
+            padding: 15px 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            border: 1px solid var(--gold);
+        }
+
+        .final-team {
+            text-align: center;
+        }
+
+        .final-team-name {
+            font-size: 0.85rem;
+            color: var(--gold-light);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .final-team-score {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .final-team-score.winner {
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .final-divider {
+            font-size: 2rem;
+            color: var(--gold);
+            opacity: 0.5;
+        }
+
+        .hands-history-container {
+            margin: 20px 0;
+            max-width: 100%;
+        }
+
+        .hands-history-container h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .hands-history-table-wrapper {
+            max-height: 200px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid var(--gold);
+        }
+
+        .hands-history-table-wrapper::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .hands-history-table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 3px;
+        }
+
+        .hands-history-table {
+            /* width: 100%; */
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 500px;
+        }
+
+        .hands-history-table thead {
+            background: #3f1014;
+            position: sticky;
+            top: 0;
+        }
+
+        .hands-history-table th {
+            padding: 8px 6px;
+            color: var(--gold);
+            font-weight: 600;
+            text-align: center;
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .hands-history-table .subheader th {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--gold-light);
+            padding: 4px 6px;
+        }
+
+        .hands-history-table td {
+            padding: 8px 6px;
+            text-align: center;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+            color: var(--cream);
+        }
+
+        .hands-history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .hands-history-table tr.winner-ns td:nth-child(n+4):nth-child(-n+6) {
+            background: rgba(201, 162, 39, 0.2);
+        }
+
+        .hands-history-table tr.winner-ew td:nth-child(n+7):nth-child(-n+9) {
+            background: rgba(201, 162, 39, 0.2);
+        }
+
+        .hands-history-table .points-won {
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .hands-history-table .trump-cell {
+            font-size: 1.1rem;
+        }
+
+        .hands-col-ma-visible {
+            display: table-cell;
+        }
+
+        .game-over-content button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--burgundy-dark);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 200px;
+        }
+
+        .game-over-content button:hover {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+        }
+
+        /* Animació de recollir basa */
+        @keyframes collectCards {
+            to {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        .collecting {
+            animation: collectCards 0.5s ease forwards;
+        }
+
+        /* info  valor triunfos */
+        #footer-info {
+            position: absolute; 
+            bottom: 10px; 
+            width: 100%; 
+            text-align: center; 
+            font-size: 0.9rem; 
+            color: var(--cream-dark);
+        }
+
+        .info-row {
+            display: flex; 
+            gap: 1rem; 
+            overflow-x: auto; 
+            white-space: nowrap; 
+            scrollbar-width: none; 
+            justify-content: center;
+        }
+
+        .info-item {
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem;
+            font-family: 'Playfair Display', serif;
+            color: #d8c9c9;
+        }
+
+        .info-dot {
+            width: 8px; 
+            height: 8px; 
+            border-radius: 50%; 
+            background-color: var(--gold);
+        }
+
+
+
+/* Responsive - Tablets */
+        @media (max-width: 900px) {
+            #log-toggle {
+                display: block;
+            }
+
+            #game-log {
+                width: 200px;
+                max-height: 150px;
+            }
+        }
+
+        /* Responsive - Mòbils */
+        @media (max-width: 768px) {
+            .title-container h1 {
+                font-size: 3rem;
+                letter-spacing: 0.05em;
+            }
+
+            /* Amagar mans dels bots */
+            #hand-north,
+            #hand-west,
+            #hand-east {
+                display: none !important;
+            }
+
+            /* Amagar botó del log */
+            #log-container {
+                display: none;
+            }
+
+            /* Header compacte */
+            #scoreboard {
+                padding: 8px 15px;
+                gap: 15px;
+                top: 10px;
+            }
+            
+            .score-value {
+                font-size: 1.3rem;
+            }
+
+            .score-team-name {
+                font-size: 0.7rem;
+            }
+
+            #multiplier-display {
+                padding: 8px 12px;
+                top: 10px;
+            }
+
+            
+            #trump-display {
+                padding: 8px 12px;
+                top: 10px;
+            }
+
+            #multiplier-display .label {
+                font-size: 1.6rem;
+            }
+
+            #trump-display .label {
+                font-size: 0.65rem;
+            }
+
+            #trump-display .trump-suit {
+                font-size: 1.6rem;
+            }
+
+            #trump-display .trump-name {
+                font-size: 0.8rem;
+            }
+
+            #multiplier-display .value {
+                font-size: 1.3rem;
+            }
+
+            /* Noms dels jugadors amb comptador de bases */
+            .player-name {
+                font-family: 'Playfair Display', serif;
+                font-size: 0.85rem;
+                padding: 5px 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+                color:  var(--gold);
+                border-radius: 10px;
+                font-weight: 700;
+            }
+
+
+            .tricks-count {
+                background: var(--gold);
+                color: var(--burgundy-dark);
+                font-size: 0.7rem;
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-weight: 700;
+                padding-left: 10px;
+                font-size: 0.8rem;
+            }
+
+
+            /* Amagar piles visuals */
+            .won-tricks-pile {
+                display: none !important;
+            }
+
+            /* Posicions dels jugadors */
+            #player-north {
+                top: 90px;
+            }
+
+            #player-south {
+                bottom: 40px;
+                z-index: 200;
+            }
+
+            #player-west {
+                left: 10px;
+                top: 45%;
+            }
+
+            #player-east {
+                right: 10px;
+                top: 45%;
+            }
+
+            /* Noms Est i Oest verticals amb bases a sota */
+            #player-west,
+            #player-east {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #player-west .player-name,
+            #player-east .player-name {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            /* Mà del jugador humà: 2 files de 6 cartes */
+            #player-south .hand {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 4px;
+                max-width: 95vw;
+                justify-items: center;
+                padding-bottom: 10px;
+            }
+
+            #player-south .hand .card {
+                width: 48px;
+                height: 68px;
+                margin: 0;
+            }
+
+            #player-south .hand .card .suit {
+                font-size: 1.3rem;
+            }
+
+            #player-south .hand .card .value {
+                font-size: 0.75rem;
+            }
+
+            /* Zona de joc centrada */
+            #play-area {
+                width: 180px;
+                height: 180px;
+                top: 45%;
+            }
+
+            .played-card-container .card {
+                width: 50px;
+                height: 70px;
+            }
+
+            .played-card-container .card .suit {
+                font-size: 1.4rem;
+            }
+
+            .played-card-container .card .value {
+                font-size: 0.8rem;
+            }
+
+            .played-card-container.south { 
+                bottom: 5px; 
+            }
+            .played-card-container.north { 
+                top: 0px; 
+            }
+            .played-card-container.west { 
+                left: 27px; 
+                top: 55px;
+            }
+            .played-card-container.east { 
+                right: 28px; 
+                top: 55px;
+            }
+
+            /* Panells modals */
+            .trump-panel {
+                padding: 20px;
+                margin: 15px;
+                max-width: calc(100vw - 30px);
+            }
+
+            .trump-panel h2 {
+                font-size: 1.3rem;
+            }
+
+            .trump-options {
+                gap: 2px;
+            }
+
+            .trump-btn {
+                width: 65px;
+                height: 65px;
+                border-radius: 10px;
+            }
+
+            .trump-btn .suit-icon {
+                font-size: 1.6rem;
+            }
+
+            .trump-btn .suit-name {
+                font-size: 0.65rem;
+            }
+
+            .trump-btn.botifarra,
+            .trump-btn.delegar {
+                padding: 10px;
+            }
+
+            .contro-content {
+                padding: 20px;
+                margin: 15px;
+            }
+
+            .contro-content h2 {
+                font-size: 1.3rem;
+            }
+
+            .contro-btn {
+                padding: 10px 25px;
+                font-size: 1rem;
+            }
+
+            #message-area {
+                padding: 12px 20px;
+                max-width: calc(100vw - 40px);
+            }
+
+            #message-area h3 {
+                font-size: 1.1rem;
+            }
+
+            /* Modal última basa */
+            .last-trick-content {
+                padding: 15px 20px;
+                margin: 10px;
+            }
+
+            .last-trick-cards {
+                gap: 6px;
+            }
+
+            .last-trick-cards .card {
+                width: 45px;
+                height: 65px;
+            }
+
+            .last-trick-cards .card .suit {
+                font-size: 1.2rem;
+            }
+
+            .last-trick-cards .card .value {
+                font-size: 0.7rem;
+            }
+
+            /* Game over */
+            .game-over-content {
+                padding: 25px;
+                margin: 15px;
+            }
+
+            .game-over-content h2 {
+                font-size: 1.8rem;
+                margin-bottom: 1px;
+            }
+
+            .game-over-content .final-score {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+
+            .final-scoreboard {
+                gap: 15px;
+                padding: 15px 20px;
+                margin: 20px 0;
+            }
+
+            .final-team-name {
+                font-size: 0.75rem;
+            }
+
+            .final-team-score {
+                font-size: 1.8rem;
+            }
+
+            .final-divider {
+                font-size: 1.5rem;
+            }
+
+            .game-over-content button {
+                padding: 12px 30px;
+                font-size: 1rem;
+                min-width: 180px;
+            }
+
+            .final-scoreboard {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 25px;
+                margin: 20px 0;
+                padding: 15px 30px;
+                background: rgba(0,0,0,0.3);
+                border-radius: 15px;
+                border: 1px solid var(--gold);
+            }
+
+            .final-team {
+                text-align: center;
+            }
+
+            .final-team-name {
+                font-size: 0.85rem;
+                color: var(--gold-light);
+                margin-bottom: 5px;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+            }
+
+            .final-team-score {
+                font-family: 'Playfair Display', serif;
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: var(--gold);
+            }
+
+            .final-team-score.winner {
+                color: #FFD700;
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            }
+
+            .final-divider {
+                font-size: 2rem;
+                color: var(--gold);
+                opacity: 0.5;
+            }
+
+            .hands-history-container {
+                margin: 20px 0;
+                max-width: 100%;
+            }
+
+            .hands-history-container h3 {
+                font-family: 'Playfair Display', serif;
+                color: var(--gold);
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+
+            .hands-history-table-wrapper {
+                max-height: 200px;
+                overflow-y: auto;
+                border-radius: 10px;
+                border: 1px solid var(--gold);
+            }
+
+            .hands-history-table-wrapper::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .hands-history-table-wrapper::-webkit-scrollbar-thumb {
+                background: var(--gold);
+                border-radius: 3px;
+            }
+
+            .hands-history-table {
+                /* width: 100%; */
+                border-collapse: collapse;
+                font-size: 0.85rem;
+                min-width: 500px;
+            }
+
+            .hands-history-table thead {
+                background: #3f1014;
+                position: sticky;
+                top: 0;
+            }
+
+            .hands-history-table th {
+                padding: 8px 6px;
+                color: var(--gold);
+                font-weight: 600;
+                text-align: center;
+                border-bottom: 1px solid var(--gold);
+            }
+
+            .hands-history-table .subheader th {
+                font-size: 0.7rem;
+                font-weight: 400;
+                color: var(--gold-light);
+                padding: 4px 6px;
+            }
+
+            .hands-history-table td {
+                padding: 8px 6px;
+                text-align: center;
+                border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+                color: var(--cream);
+            }
+
+            .hands-history-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .hands-history-table tr.winner-ns td:nth-child(n+4):nth-child(-n+6) {
+                background: rgba(201, 162, 39, 0.2);
+            }
+
+            .hands-history-table tr.winner-ew td:nth-child(n+7):nth-child(-n+9) {
+                background: rgba(201, 162, 39, 0.2);
+            }
+
+            .hands-history-table .points-won {
+                font-weight: 700;
+                color: var(--gold);
+            }
+
+            .hands-history-table .trump-cell {
+                font-size: 1.1rem;
+            }
+            .hands-col-ma-visible {
+                display: none;
+            }
+
+            /* info  valor triunfos */
+            #footer-info {
+                position: absolute; 
+                bottom: 10px; 
+                width: 100%; 
+                text-align: center; 
+                font-size: 0.9rem; 
+                color: var(--cream-dark);
+            }
+
+            .info-row {
+                display: flex; 
+                gap: 1rem; 
+                overflow-x: auto; 
+                white-space: nowrap; 
+                scrollbar-width: none; 
+                justify-content: center;
+            }
+
+            .info-item {
+                display: flex; 
+                align-items: center; 
+                gap: 0.3rem;
+                font-family: 'Playfair Display', serif;
+                color: #d8c9c9;
+            }
+
+            .info-dot {
+                width: 8px; 
+                height: 8px; 
+                border-radius: 50%; 
+                background-color: var(--gold);
+                display: none;
+            }
+        }
+
+        /* Responsive - Mòbils molt petits */
+        @media (max-width: 380px) {
+            #player-south .hand .card {
+                width: 42px;
+                height: 60px;
+            }
+
+            #player-south .hand .card .suit {
+                font-size: 1.1rem;
+            }
+
+            #player-south .hand .card .value {
+                font-size: 0.65rem;
+            }
+
+            .played-card-container .card {
+                width: 50px;
+                height: 70px;
+            }
+
+            #scoreboard {
+                padding: 6px 10px;
+                gap: 10px;
+            }
+
+            .score-value {
+                font-size: 1.1rem;
+            }
+
+            #multiplier-display {
+                padding: 6px 10px;
+            }
+
+            #trump-display {
+                padding: 6px 10px;
+                right: 10px;
+            }
+
+            .trump-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .trump-btn .suit-icon {
+                font-size: 1.4rem;
+            }
+        }
