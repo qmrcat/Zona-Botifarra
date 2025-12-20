@@ -1,4 +1,4 @@
-        // ==================== CONFIGURACIÓ DEL JOC ====================
+// ==================== CONFIGURACIÓ DEL JOC ====================
         const SUITS = ['oros', 'copes', 'espases', 'bastos'];
         const SUIT_ICONS = {
             'oros': '🪙',
@@ -28,15 +28,46 @@
             1: 'As', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8',
             9: 'Manilla', 10: 'Sota', 11: 'Cavall', 12: 'Rei'
         };
+        const CARD_NAMES_MINI = {
+            1: 'A', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8',
+            9: 'M', 10: 'S', 11: 'C', 12: 'R'
+        };
 
         // Jugadors: south (humà), west, north (company), east
         const PLAYERS = ['south', 'north', 'west', 'east'];
-        const PLAYER_NAMES = {
+        
+        // Llista de noms per als bots (pots afegir-ne o modificar-los)
+        const BOT_NAMES = [
+            'Jordi', 'Montse', 'Pere', 'Marta', 'Joan', 'Núria',
+            'Oriol', 'Carla', 'Marc', 'Laia', 'Pau', 'Anna',
+            'Quim', 'Rosa', 'Sergi', 'Teresa', 'Arnau', 'Gemma',
+            'Ferran', 'Sílvia', 'Ramon', 'Mercè', 'Xavier', 'Eulàlia',
+            'Bernat', 'Mariona', 'Enric', 'Clàudia', 'Martí', 'Berta',
+            'Oupman', 'Pol', 'Roger', 'Alex', 'Francesc', 'Mercè', 'Jaume',
+            'Xavier', 'Isa','Laura','Isaac','Didac', 'Miquel', 'Cristina'
+        ];
+        
+        // Noms dels jugadors (es modifica dinàmicament)
+        let PLAYER_NAMES = {
             'south': 'Tu',
-            'north': 'Nord',
-            'west': 'Oest',
-            'east': 'Est'
+            'north': 'Company',
+            'west': 'Oponent 1',
+            'east': 'Oponent 2'
         };
+        
+        // Funció per assignar noms aleatoris als bots
+        function assignRandomBotNames() {
+            // Filtrar noms que coincideixin amb el del jugador humà (ignorant majúscules/minúscules)
+            const humanName = PLAYER_NAMES.south.toLowerCase().trim();
+            const availableNames = BOT_NAMES.filter(name => name.toLowerCase().trim() !== humanName);
+            
+            // Barrejar els noms disponibles
+            const shuffledNames = [...availableNames].sort(() => Math.random() - 0.5);
+            
+            PLAYER_NAMES.north = shuffledNames[0];
+            PLAYER_NAMES.west = shuffledNames[1];
+            PLAYER_NAMES.east = shuffledNames[2];
+        }
 
         // ==================== ESTAT DEL JOC ====================
         let handsHistory = [];
@@ -59,7 +90,8 @@
             phase: 'dealing',  // dealing, trump-selection, contro, playing, scoring
             controPhase: null,  // null, 'contro', 'recontro', 'santvicenc'
             controTeam: null,
-            waitingForContro: false
+            waitingForContro: false,
+            trickHistory: [],  // Historial de tirades de la mà actual
         };
 
         // ==================== UTILITATS ====================
@@ -359,7 +391,8 @@
             // Repartir 12 cartes a cada jugador
             let cardIndex = 0;
             // Començar pel jugador a la dreta del que reparteix
-            let dealTo = getNextPlayer(getNextPlayer(getNextPlayer(gameState.dealer)));
+            // let dealTo = getNextPlayer(getNextPlayer(getNextPlayer(gameState.dealer)));
+            let dealTo = getNextPlayer(gameState.dealer);
             
             for (let round = 0; round < 3; round++) {  // 3 rondes de 4 cartes
                 for (let p = 0; p < 4; p++) {
@@ -702,6 +735,17 @@
 
         // ==================== FLUX DEL JOC ====================
         async function startGame() {
+            // Obtenir el nom del jugador humà
+            const playerNameInput = document.getElementById('player-name-input');
+            const playerName = playerNameInput.value.trim() || 'Tu';
+            PLAYER_NAMES.south = playerName;
+            
+            // Assignar noms aleatoris als bots
+            assignRandomBotNames();
+            
+            // Actualitzar els noms a la interfície
+            updatePlayerNames();
+            
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
             
@@ -709,6 +753,19 @@
             gameState.dealer = PLAYERS[Math.floor(Math.random() * 4)];
             
             await startNewHand();
+        }
+        
+        function updatePlayerNames() {
+            document.getElementById('name-south').childNodes[0].textContent = PLAYER_NAMES.south;
+            document.getElementById('name-north').childNodes[0].textContent = PLAYER_NAMES.north + ' (Company)';
+            document.getElementById('name-west').childNodes[0].textContent = PLAYER_NAMES.west;
+            document.getElementById('name-east').childNodes[0].textContent = PLAYER_NAMES.east;
+            
+            // Actualitzar també el marcador
+            const teamNS = PLAYER_NAMES.south + ' i ' + PLAYER_NAMES.north;
+            const teamEW = PLAYER_NAMES.east + ' i ' + PLAYER_NAMES.west;
+            document.querySelector('#scoreboard .score-team:first-child .score-team-name').textContent = teamNS;
+            document.querySelector('#scoreboard .score-team:last-child .score-team-name').textContent = teamEW;
         }
 
         async function startNewHand() {
@@ -726,6 +783,7 @@
             gameState.controPhase = null;
             gameState.controTeam = null;
             gameState.phase = 'dealing';
+            gameState.trickHistory = [];
             
             updateTrumpDisplay();
             updateMultiplierDisplay();
@@ -879,7 +937,7 @@
                         if (!gameState.isBotifarra) {
                             await santVicencPhase();
                         } else {
-                            await startPlaying();  // ← Ara sí que comença el joc
+                            await startPlaying();
                         }
                         return;
                     }
@@ -892,6 +950,8 @@
                         updateMultiplierDisplay();
                         if (!gameState.isBotifarra) {
                             await santVicencPhase();
+                        } else {
+                            await startPlaying();
                         }
                         return;
                     }
@@ -1027,6 +1087,13 @@
             };
             
             log(`${PLAYER_NAMES[winner]} guanya l'última basa (${points} punts)`);
+
+            // Guardar la tirada a l'historial
+            gameState.trickHistory.push({
+                cards: [...gameState.currentTrick],
+                leadPlayer: gameState.currentTrick[0].player,
+                winner: winner
+            });
             
             await delay(1000);
             
@@ -1073,6 +1140,13 @@
             };
             
             log(`${PLAYER_NAMES[winner]} guanya la basa (${points} punts)`);
+
+            // Guardar la tirada a l'historial
+            gameState.trickHistory.push({
+                cards: [...gameState.currentTrick],
+                leadPlayer: gameState.currentTrick[0].player,
+                winner: winner
+            });
             
             await delay(1000);
             
@@ -1172,7 +1246,8 @@
                     totalPoints: ewPoints
                 },
                 winner: winningTeam,
-                pointsWon: pointsWon
+                pointsWon: pointsWon,
+                trickHistory: [...gameState.trickHistory]
             });
             
             if (winningTeam === 'ns') {
@@ -1183,7 +1258,9 @@
             
             updateScoreboard();
             
-            const teamName = winningTeam === 'ns' ? 'Tu i Nord' : 'Est i Oest';
+            const teamName = winningTeam === 'ns' 
+                ? PLAYER_NAMES.south + ' i ' + PLAYER_NAMES.north 
+                : PLAYER_NAMES.east + ' i ' + PLAYER_NAMES.west;
             showMessage(
                 `${teamName} guanyen!`,
                 `+${pointsWon} punts (${winningTeam === 'ns' ? nsPoints : ewPoints} a ${winningTeam === 'ns' ? ewPoints : nsPoints})`,
@@ -1208,12 +1285,29 @@
 
  
         function endGame() {
+            // Resetjar els toggles a l'estat minimitzat
+            document.getElementById('hands-history-content').style.display = 'none';
+            document.getElementById('toggle-hands-history').textContent = '▼ Mostrar';
+            document.getElementById('tricks-history-content').style.display = 'none';
+            document.getElementById('toggle-tricks-history').textContent = '▼ Mostrar';
+
             const isHumanWinner = gameState.scores.ns > 100;
             
             document.getElementById('winner-text').textContent = 
                 isHumanWinner ? '🎉 Victòria! 🎉' : 'Has perdut...';
             document.getElementById('final-score').textContent = 
                 isHumanWinner ? 'Enhorabona, heu guanyat la partida!' : 'Els rivals han guanyat la partida';
+            
+            // Actualitzar noms dels equips al marcador final
+            const teamNS = PLAYER_NAMES.south + ' i ' + PLAYER_NAMES.north;
+            const teamEW = PLAYER_NAMES.east + ' i ' + PLAYER_NAMES.west;
+            document.querySelector('.final-team:first-child .final-team-name').textContent = teamNS;
+            document.querySelector('.final-team:last-child .final-team-name').textContent = teamEW;
+            
+            // Actualitzar noms a la capçalera de la taula d'historial
+            const headerCells = document.querySelectorAll('.hands-history-table thead tr:first-child th');
+            headerCells[3].textContent = teamNS;
+            headerCells[4].textContent = teamEW;
             
             // Actualitzar marcador final
             document.getElementById('final-score-ns').textContent = gameState.scores.ns;
@@ -1232,7 +1326,7 @@
                 row.className = hand.winner === 'ns' ? 'winner-ns' : 'winner-ew';
                 
                 row.innerHTML = `
-                    <td class="hands-col-ma-visible">${hand.handNumber}</td>
+                    <td>${hand.handNumber}</td>
                     <td class="trump-cell">${hand.trumpIcon}</td>
                     <td>×${hand.multiplier}</td>
                     <td>${hand.ns.tricks}</td>
@@ -1246,6 +1340,71 @@
                 
                 tbody.appendChild(row);
             });
+
+
+            // Generar taula de tirades per cada mà
+            // const tricksContainer = document.getElementById('tricks-history-container');
+            const tricksContainer = document.getElementById('tricks-history-content');
+            tricksContainer.innerHTML = '';
+
+            handsHistory.forEach((hand, handIndex) => {
+                const handSection = document.createElement('div');
+                handSection.className = 'hand-tricks-section';
+                
+                const handTitle = document.createElement('h4');
+                handTitle.textContent = `Mà ${hand.handNumber} - ${hand.trumpIcon} ${hand.trump}`;
+                handSection.appendChild(handTitle);
+                
+                const table = document.createElement('table');
+                table.className = 'tricks-history-table';
+                
+                // Capçalera
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr>
+                        <th>Tirada</th>
+                        <th>${PLAYER_NAMES.north}</th>
+                        <th>${PLAYER_NAMES.west}</th>
+                        <th>${PLAYER_NAMES.south}</th>
+                        <th>${PLAYER_NAMES.east}</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+                
+                // Cos de la taula
+                const tbody = document.createElement('tbody');
+                const ordinals = ['1a', '2a', '3a', '4a', '5a', '6a', '7a', '8a', '9a', '10a', '11a', '12a'];
+                
+                hand.trickHistory.forEach((trick, trickIndex) => {
+                    const row = document.createElement('tr');
+                    
+                    // Columna del número de tirada
+                    let rowHTML = `<td>${ordinals[trickIndex]}</td>`;
+                    
+                    // Columnes per cada jugador (en ordre: north, west, south, east)
+                    ['north', 'west', 'south', 'east'].forEach(player => {
+                        const card = trick.cards.find(c => c.player === player);
+                        if (card) {
+                            const isLeader = trick.leadPlayer === player;
+                            const cardName = CARD_NAMES_MINI[card.value];
+                            const suitIcon = SUIT_ICONS[card.suit];
+                            const leaderMark = isLeader ? ' ✋' : '';
+                            const winnerClass = trick.winner === player ? 'trick-winner' : '';
+                            rowHTML += `<td class="${winnerClass}">${cardName} ${suitIcon}${leaderMark}</td>`;
+                        } else {
+                            rowHTML += `<td>-</td>`;
+                        }
+                    });
+                    
+                    row.innerHTML = rowHTML;
+                    tbody.appendChild(row);
+                });
+                
+                table.appendChild(tbody);
+                handSection.appendChild(table);
+                tricksContainer.appendChild(handSection);
+            });            
+
             
             document.getElementById('game-over').style.display = 'flex';
         }        
@@ -1254,6 +1413,11 @@
             gameState.scores = { ns: 0, ew: 0 };
             gameState.multiplier = 1;
             handsHistory = [];
+            
+            // Assignar nous noms aleatoris als bots
+            // assignRandomBotNames();
+            // updatePlayerNames();
+            
             document.getElementById('game-over').style.display = 'none';
             document.getElementById('game-log').innerHTML = '';
             updateScoreboard();
@@ -1269,6 +1433,8 @@
             document.getElementById('game-container').style.display = 'none';
             document.getElementById('start-screen').style.display = 'flex';
             document.getElementById('game-log').innerHTML = '';
+            // Netejar el camp de nom per si es vol canviar
+            document.getElementById('player-name-input').value = '';
         }
 
         function delay(ms) {
@@ -1281,6 +1447,31 @@
         document.getElementById('btn-main-menu').addEventListener('click', goToMainMenu);
         document.getElementById('info-toggle').addEventListener('click', () => {
             window.location.href = '/Zona-Botifarra/infografia.html'; // Substitueix amb la URL desitjada
+        });
+        // Toggle historial de mans
+        document.getElementById('toggle-hands-history').addEventListener('click', function() {
+            const content = document.getElementById('hands-history-content');
+            const btn = this;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                btn.textContent = '▲ Amagar';
+            } else {
+                content.style.display = 'none';
+                btn.textContent = '▼ Mostrar';
+            }
+        });
+
+        // Toggle historial de tirades
+        document.getElementById('toggle-tricks-history').addEventListener('click', function() {
+            const content = document.getElementById('tricks-history-content');
+            const btn = this;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                btn.textContent = '▲ Amagar';
+            } else {
+                content.style.display = 'none';
+                btn.textContent = '▼ Mostrar';
+            }
         });
 
         // Toggle del log
