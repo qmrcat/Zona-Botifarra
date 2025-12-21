@@ -44,7 +44,9 @@
             'Ferran', 'Sílvia', 'Ramon', 'Mercè', 'Xavier', 'Eulàlia',
             'Bernat', 'Mariona', 'Enric', 'Clàudia', 'Martí', 'Berta',
             'Oupman', 'Pol', 'Roger', 'Alex', 'Francesc', 'Mercè', 'Jaume',
-            'Xavier', 'Isa','Laura','Isaac','Didac', 'Miquel', 'Cristina'
+            'Xavier', 'Isa','Laura','Isaac','Didac', 'Miquel', 'Cristina',
+            'Amalric ', 'Berenguer', 'Ermessenda', 'Constança', 'Hug', 'Guerau',
+            'Sibil·la', 'Lluc', 'Agnès', 'Adelaida', 
         ];
         
         // Noms dels jugadors (es modifica dinàmicament)
