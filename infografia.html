@@ -1,314 +1,911 @@
-
 <!DOCTYPE html>
 <html lang="ca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infografia: Com jugar a la Botifarra</title>
-    <!-- Tailwind CSS para el diseño -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" href="imatges/favicon.ico" type="image/x-icon">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet"> -->
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            scroll-behavior: smooth;
+        :root {
+            --gold: #C9A227;
+            --gold-light: #E8D48B;
+            --burgundy: #6B1C23;
+            --burgundy-dark: #4A1219;
+            --cream: #F5F0E1;
+            --cream-dark: #E8DFC8;
+            --green-felt: #1B5E20;
+            --green-felt-dark: #0D3B0F;
+            --card-white: #FFFEF8;
         }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            transition: all 0.3s ease;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .step-line::after {
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: radial-gradient(ellipse at center, var(--green-felt) 0%, var(--green-felt-dark) 100%);
+            min-height: 100vh;
+            color: var(--cream);
+            line-height: 1.6;
+        }
+
+        /* Textura de feltre */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 50%, var(--burgundy-dark) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
             content: '';
             position: absolute;
-            top: 2rem;
-            left: 50%;
-            width: 100%;
-            height: 2px;
-            background: #e2e8f0;
-            z-index: -1;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L35 25H55L39 38L45 58L30 45L15 58L21 38L5 25H25L30 5Z' fill='%23C9A227' fill-opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
         }
-        @media (max-width: 1024px) {
-            .step-line::after { display: none; }
+
+        .back-button {
+            position: absolute;
+            left: 1.5rem;
+            top: 1.5rem;
+            padding: 0.6rem 1.2rem;
+            background: rgba(201, 162, 39, 0.2);
+            border: 1px solid var(--gold);
+            border-radius: 25px;
+            color: var(--gold-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            background: rgba(201, 162, 39, 0.4);
+            box-shadow: 0 0 15px rgba(201, 162, 39, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            color: var(--gold);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--gold-light);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .header-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .badge {
+            background: rgba(201, 162, 39, 0.2);
+            border: 1px solid var(--gold);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .badge-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title h2 {
+            color: var(--gold);
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .section-title-icon {
+            font-size: 1.8rem;
+        }
+
+        .section-subtitle {
+            color: var(--gold-light);
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-left: 2.8rem;
+            margin-top: -0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Flow Steps */
+        .flow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .flow-step {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .flow-step-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-dark) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .flow-step h3 {
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-step p {
+            font-size: 0.9rem;
+            color: var(--cream);
+            opacity: 0.9;
+        }
+
+        /* Cards Section */
+        .cards-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .cards-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .total-badge {
+            background: var(--gold);
+            color: var(--burgundy-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 700;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+
+        .card-item {
+            background: var(--card-white);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .card-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(201, 162, 39, 0.3);
+        }
+
+        .card-item.low-value {
+            opacity: 0.6;
+            border-color: rgba(201, 162, 39, 0.4);
+        }
+
+        .card-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--burgundy-dark);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .card-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--burgundy);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 0.3rem 0;
+        }
+
+        .card-points {
+            background: var(--gold);
+            color: var(--burgundy-dark);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.1rem;
+            margin: 0.5rem auto 0;
+        }
+
+        .card-item.low-value .card-points {
+            background: #ccc;
+            color: #666;
+        }
+
+        .cards-info {
+            background: rgba(201, 162, 39, 0.1);
+            border-left: 3px solid var(--gold);
+            padding: 1rem 1.2rem;
+            margin-top: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .cards-info p {
+            font-size: 0.9rem;
+            color: var(--cream);
+        }
+
+        /* Rules Section */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .rule-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(201, 162, 39, 0.3);
+        }
+
+        .rule-card.enemy {
+            border-color: rgba(220, 38, 38, 0.4);
+        }
+
+        .rule-card.ally {
+            border-color: rgba(34, 197, 94, 0.4);
+        }
+
+        .rule-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .rule-header-icon {
+            font-size: 1.5rem;
+        }
+
+        .rule-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .rule-card.enemy .rule-header h3 {
+            color: #f87171;
+        }
+
+        .rule-card.ally .rule-header h3 {
+            color: #4ade80;
+        }
+
+        .rule-list {
+            list-style: none;
+        }
+
+        .rule-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .rule-card.enemy .rule-list li {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+
+        .rule-card.ally .rule-list li {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .rule-check {
+            font-size: 1rem;
+            margin-top: 2px;
+        }
+
+        /* Multipliers Section */
+        .multipliers-section {
+            background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .multipliers-section::before {
+            content: '⚡';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 150px;
+            opacity: 0.1;
+        }
+
+        .multipliers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .multiplier-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .multiplier-item:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+        }
+
+        .multiplier-item.botifarra {
+            border-color: var(--gold);
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .multiplier-item.contro {
+            border-color: #f87171;
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .multiplier-item.recontro {
+            border-color: #a78bfa;
+            background: rgba(167, 139, 250, 0.1);
+        }
+
+        .multiplier-item.santvicenc {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .multiplier-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .multiplier-item.botifarra .multiplier-label { color: var(--gold); }
+        .multiplier-item.contro .multiplier-label { color: #f87171; }
+        .multiplier-item.recontro .multiplier-label { color: #a78bfa; }
+        .multiplier-item.santvicenc .multiplier-label { color: #38bdf8; }
+
+        .multiplier-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--cream);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .multiplier-note {
+            font-size: 0.7rem;
+            color: rgba(245, 240, 225, 0.5);
+            margin-top: 0.3rem;
+            font-style: italic;
+        }
+
+        /* Alerts Section */
+        .alerts-section {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid rgba(220, 38, 38, 0.4);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .alerts-section .section-title h2 {
+            color: #f87171;
+        }
+
+        .alerts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .alert-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .alert-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fca5a5;
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .alert-card p {
+            font-size: 0.9rem;
+            color: var(--cream);
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .penalty-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .penalty-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .penalty-points {
+            color: #f87171;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(245, 240, 225, 0.5);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(201, 162, 39, 0.2);
+            margin-top: 2rem;
+        }
+
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Sticky Reference */
+        .sticky-reference {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(74, 18, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid var(--gold);
+            padding: 0.8rem 1.5rem;
+            z-index: 100;
+        }
+
+        .sticky-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sticky-cards {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .sticky-cards span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+
+        .sticky-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+        }
+
+        .sticky-goal {
+            background: var(--gold);
+            color: var(--burgundy-dark);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 4rem 1.5rem 2rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .back-button {
+                position: static;
+                display: inline-block;
+                margin-bottom: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.4rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .sticky-content {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .sticky-cards {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .flow-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-900 pb-24">
-
-    <!-- HEADER -->
-    <header class="relative bg-gradient-to-br from-red-700 via-red-600 to-amber-500 py-16 px-6 text-white text-center shadow-xl rounded-b-[3rem] mb-12">
-        <a href="/Zona-Botifarra" class="absolute top-4 left-4 bg-white/20 backdrop-blur-xl px-4 py-2 rounded-full flex items-center gap-2 border border-white/30 text-sm font-semibold text-white hover:bg-white/30 transition">
-            <i data-lucide="home" class="w-4 h-4"></i>
-            Inici
-        </a>
-        <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter uppercase italic">La Botifarra</h1>
-        <p class="text-xl md:text-2xl font-light max-w-2xl mx-auto opacity-95 leading-relaxed">
-            La guia definitiva per dominar el joc de cartes més popular de Catalunya.
-        </p>
-        <div class="mt-10 flex justify-center gap-4 flex-wrap">
-            <div class="bg-white/20 backdrop-blur-xl px-5 py-2.5 rounded-2xl flex items-center gap-3 border border-white/30">
-                <i data-lucide="users" class="w-5 h-5"></i>
-                <span class="font-semibold">4 Jugadors</span>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="back-button">← Tornar al joc</a>
+        <h1>🃏 La Botifarra</h1>
+        <p>La guia definitiva per dominar el joc de cartes més popular de Catalunya</p>
+        <div class="header-badges">
+            <div class="badge">
+                <span class="badge-icon">👥</span>
+                <span>4 Jugadors</span>
             </div>
-            <div class="bg-white/20 backdrop-blur-xl px-5 py-2.5 rounded-2xl flex items-center gap-3 border border-white/30">
-                <i data-lucide="layers" class="w-5 h-5"></i>
-                <span class="font-semibold">48 Cartes</span>
+            <div class="badge">
+                <span class="badge-icon">🎴</span>
+                <span>48 Cartes</span>
             </div>
-            <div class="bg-white/20 backdrop-blur-xl px-5 py-2.5 rounded-2xl flex items-center gap-3 border border-white/30">
-                <i data-lucide="trophy" class="w-5 h-5"></i>
-                <span class="font-semibold">Objectiu: 101</span>
+            <div class="badge">
+                <span class="badge-icon">🏆</span>
+                <span>Objectiu: 101</span>
             </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-6 space-y-16">
-
-        <!-- EL FLUX DE LA PARTIDA -->
-        <section>
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-black uppercase tracking-tight text-stone-800 flex items-center justify-center gap-3">
-                    <i data-lucide="refresh-cw" class="text-red-600"></i>
-                    Flux de la Partida
-                </h2>
-                <p class="text-stone-500 mt-2">El recorregut des del repartiment fins a la victòria</p>
+    <div class="container">
+        <!-- Flux de la Partida -->
+        <section class="section">
+            <div class="section-title">
+                <span class="section-title-icon">🔄</span>
+                <h2>Flux de la Partida</h2>
             </div>
+            <p class="section-subtitle">El recorregut des del repartiment fins a la victòria</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Step 1 -->
-                <div class="relative flex flex-col items-center text-center group step-line">
-                    <div class="w-20 h-20 rounded-3xl bg-white shadow-lg border border-stone-100 flex items-center justify-center text-3xl mb-6 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
-                        🎴
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 text-stone-800">1. Repartir</h3>
-                    <p class="text-sm text-stone-600 leading-relaxed px-4">48 cartes en parelles. Es donen de 4 en 4 fins a tenir-ne 12 cada jugador.</p>
+            <div class="flow-grid">
+                <div class="flow-step">
+                    <div class="flow-step-icon">🎴</div>
+                    <h3>1. Repartir</h3>
+                    <p>48 cartes en parelles. Es donen de 4 en 4 fins a tenir-ne 12 cada jugador.</p>
                 </div>
-                <!-- Step 2 -->
-                <div class="relative flex flex-col items-center text-center group step-line">
-                    <div class="w-20 h-20 rounded-3xl bg-white shadow-lg border border-stone-100 flex items-center justify-center text-3xl mb-6 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
-                        👑
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 text-stone-800">2. Triar Triomf</h3>
-                    <p class="text-sm text-stone-600 leading-relaxed px-4">Qui reparteix tria el pal de triomf o passa el torn al seu company.</p>
+                <div class="flow-step">
+                    <div class="flow-step-icon">👑</div>
+                    <h3>2. Triar Triomf</h3>
+                    <p>Qui reparteix tria el pal de triomf o passa el torn al seu company.</p>
                 </div>
-                <!-- Step 3 -->
-                <div class="relative flex flex-col items-center text-center group step-line">
-                    <div class="w-20 h-20 rounded-3xl bg-white shadow-lg border border-stone-100 flex items-center justify-center text-3xl mb-6 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
-                        ⚡
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 text-stone-800">3. Contrar</h3>
-                    <p class="text-sm text-stone-600 leading-relaxed px-4">La parella contrària pot duplicar els punts dient "Contro!".</p>
+                <div class="flow-step">
+                    <div class="flow-step-icon">⚡</div>
+                    <h3>3. Contrar</h3>
+                    <p>La parella contrària pot duplicar els punts dient "Contro!".</p>
                 </div>
-                <!-- Step 4 -->
-                <div class="relative flex flex-col items-center text-center group">
-                    <div class="w-20 h-20 rounded-3xl bg-white shadow-lg border border-stone-100 flex items-center justify-center text-3xl mb-6 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
-                        ⚔️
-                    </div>
-                    <h3 class="font-bold text-xl mb-3 text-stone-800">4. Jugar</h3>
-                    <p class="text-sm text-stone-600 leading-relaxed px-4">S'ha de seguir el pal. És obligatori matar al contrari si es pot.</p>
+                <div class="flow-step">
+                    <div class="flow-step-icon">⚔️</div>
+                    <h3>4. Jugar</h3>
+                    <p>S'ha de seguir el pal. Segons el mode, pot ser obligatori matar.</p>
                 </div>
             </div>
         </section>
 
-        <!-- VALOR DE LES CARTES -->
-        <section class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-stone-200">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-10">
-                <div class="flex items-center gap-4 text-red-700">
-                    <i data-lucide="calculator" class="w-10 h-10"></i>
-                    <div>
-                        <h2 class="text-3xl font-black uppercase tracking-tight">Puntuació</h2>
-                        <p class="text-stone-500 font-medium">Quant val cada carta?</p>
+        <!-- Valor de les Cartes -->
+        <section class="section">
+            <div class="cards-section">
+                <div class="cards-header">
+                    <div class="section-title" style="margin-bottom: 0;">
+                        <span class="section-title-icon">🧮</span>
+                        <h2>Puntuació</h2>
+                    </div>
+                    <div class="total-badge">Total mà: 72 punts</div>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card-item">
+                        <div class="card-number">9</div>
+                        <div class="card-name">Manilla</div>
+                        <div class="card-points">5</div>
+                    </div>
+                    <div class="card-item">
+                        <div class="card-number">1</div>
+                        <div class="card-name">As</div>
+                        <div class="card-points">4</div>
+                    </div>
+                    <div class="card-item">
+                        <div class="card-number">12</div>
+                        <div class="card-name">Rei</div>
+                        <div class="card-points">3</div>
+                    </div>
+                    <div class="card-item">
+                        <div class="card-number">11</div>
+                        <div class="card-name">Cavall</div>
+                        <div class="card-points">2</div>
+                    </div>
+                    <div class="card-item">
+                        <div class="card-number">10</div>
+                        <div class="card-name">Sota</div>
+                        <div class="card-points">1</div>
+                    </div>
+                    <div class="card-item low-value">
+                        <div class="card-number">2-8</div>
+                        <div class="card-name">Altres</div>
+                        <div class="card-points">0</div>
                     </div>
                 </div>
-                <div class="bg-amber-100 text-amber-800 px-6 py-3 rounded-2xl font-bold border border-amber-200 text-center">
-                    Total mà: 72 punts
-                </div>
-            </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-                <!-- Card 5 -->
-                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
-                    <div class="text-4xl font-black text-amber-900 mb-1">9</div>
-                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">Manilla</div>
-                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">5</div>
+                <div class="cards-info">
+                    <p><strong>Puntuació de la mà:</strong> Es sumen els punts de les cartes i s'afegeix <strong>1 punt per cada basa</strong> guanyada (12 bases en total). El resultat final és la diferència respecte 36.</p>
                 </div>
-                <!-- Card 4 -->
-                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
-                    <div class="text-4xl font-black text-amber-900 mb-1">1</div>
-                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">As</div>
-                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">4</div>
-                </div>
-                <!-- Card 3 -->
-                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
-                    <div class="text-4xl font-black text-amber-900 mb-1">12</div>
-                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">Rei</div>
-                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">3</div>
-                </div>
-                <!-- Card 2 -->
-                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
-                    <div class="text-4xl font-black text-amber-900 mb-1">11</div>
-                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">Cavall</div>
-                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">2</div>
-                </div>
-                <!-- Card 1 -->
-                <div class="bg-amber-50 border-2 border-amber-200 p-6 rounded-[2rem] text-center card-hover">
-                    <div class="text-4xl font-black text-amber-900 mb-1">10</div>
-                    <div class="text-sm font-bold text-amber-700 uppercase tracking-widest mb-4">Sota</div>
-                    <div class="bg-white rounded-full py-1 text-2xl font-black text-amber-600 shadow-sm border border-amber-100">1</div>
-                </div>
-                <!-- Card 0 -->
-                <div class="bg-stone-50 border-2 border-stone-100 p-6 rounded-[2rem] text-center opacity-60">
-                    <div class="text-4xl font-black text-stone-400 mb-1">2-8</div>
-                    <div class="text-sm font-bold text-stone-400 uppercase tracking-widest mb-4">Altres</div>
-                    <div class="bg-white rounded-full py-1 text-2xl font-black text-stone-300 shadow-sm border border-stone-50">0</div>
-                </div>
-            </div>
-            
-            <div class="mt-8 p-6 bg-stone-50 rounded-2xl flex items-start gap-4 border border-stone-100">
-                <i data-lucide="info" class="text-amber-600 shrink-0 w-6 h-6 mt-1"></i>
-                <p class="text-stone-600 text-sm leading-relaxed italic">
-                    <strong>Puntuació de la mà:</strong> Es sumen els punts de les cartes i es s'afegeix <strong>1 punt per cada basa</strong> guanyada (12 bases en total). El resultat final és la diferència respecte 36.
-                </p>
             </div>
         </section>
 
-        <!-- REGLES DE JOC -->
-        <section class="grid lg:grid-cols-2 gap-8">
-            <div class="bg-white p-8 rounded-[2rem] border border-stone-200 shadow-sm">
-                <div class="flex items-center gap-3 mb-6 text-blue-700">
-                    <i data-lucide="sword" class="w-8 h-8"></i>
-                    <h3 class="text-2xl font-black uppercase">Si guanya el contrari</h3>
-                </div>
-                <ul class="space-y-4">
-                    <li class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
-                        <i data-lucide="check-circle" class="text-red-600 shrink-0 w-5 h-5 mt-1"></i>
-                        <span class="text-stone-700">Has de seguir el pal i estàs <strong>obligat a matar</strong> si tens una carta millor.</span>
-                    </li>
-                    <li class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
-                        <i data-lucide="check-circle" class="text-red-600 shrink-0 w-5 h-5 mt-1"></i>
-                        <span class="text-stone-700">Si no tens el pal, has de matar amb <strong>Triomf</strong>.</span>
-                    </li>
-                </ul>
+        <!-- Regles de Joc -->
+        <section class="section">
+            <div class="section-title">
+                <span class="section-title-icon">📜</span>
+                <h2>Regles de Joc</h2>
             </div>
 
-            <div class="bg-white p-8 rounded-[2rem] border border-stone-200 shadow-sm">
-                <div class="flex items-center gap-3 mb-6 text-green-700">
-                    <i data-lucide="shield-check" class="w-8 h-8"></i>
-                    <h3 class="text-2xl font-black uppercase">Si guanya el company</h3>
+            <div class="rules-grid">
+                <div class="rule-card enemy">
+                    <div class="rule-header">
+                        <span class="rule-header-icon">⚔️</span>
+                        <h3>Si guanya el contrari</h3>
+                    </div>
+                    <ul class="rule-list">
+                        <li>
+                            <span class="rule-check">✓</span>
+                            <span>Has de seguir el pal i, en <strong>mode estricte</strong>, estàs obligat a matar si tens una carta millor.</span>
+                        </li>
+                        <li>
+                            <span class="rule-check">✓</span>
+                            <span>Si no tens el pal, has de matar amb <strong>Triomf</strong> (mode estricte).</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="space-y-4">
-                    <li class="flex items-start gap-3 p-4 bg-green-50 rounded-xl border border-green-100">
-                        <i data-lucide="check-circle" class="text-green-600 shrink-0 w-5 h-5 mt-1"></i>
-                        <span class="text-stone-700">Has de seguir el pal, però <strong>no cal matar</strong> la seva carta.</span>
-                    </li>
-                    <li class="flex items-start gap-3 p-4 bg-green-50 rounded-xl border border-green-100">
-                        <i data-lucide="check-circle" class="text-green-600 shrink-0 w-5 h-5 mt-1"></i>
-                        <span class="text-stone-700">Si no tens el pal, pots tirar <strong>qualsevol carta</strong> per ajudar (carregar punts).</span>
-                    </li>
-                </ul>
+
+                <div class="rule-card ally">
+                    <div class="rule-header">
+                        <span class="rule-header-icon">🛡️</span>
+                        <h3>Si guanya el company</h3>
+                    </div>
+                    <ul class="rule-list">
+                        <li>
+                            <span class="rule-check">✓</span>
+                            <span>Has de seguir el pal, però <strong>no cal matar</strong> la seva carta.</span>
+                        </li>
+                        <li>
+                            <span class="rule-check">✓</span>
+                            <span>Si no tens el pal, pots tirar <strong>qualsevol carta</strong> per ajudar (carregar punts).</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </section>
 
-        <!-- MULTIPLICADORS -->
-        <section class="bg-stone-900 text-white p-10 md:p-14 rounded-[3rem] shadow-2xl relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
-                <i data-lucide="zap" class="w-64 h-64"></i>
-            </div>
-            <div class="relative z-10">
-                <div class="flex items-center gap-4 mb-10 text-yellow-400">
-                    <i data-lucide="zap" class="w-10 h-10"></i>
-                    <h2 class="text-3xl font-black uppercase italic">Multiplicadors</h2>
+        <!-- Multiplicadors -->
+        <section class="section">
+            <div class="multipliers-section">
+                <div class="section-title" style="margin-bottom: 1.5rem;">
+                    <span class="section-title-icon">⚡</span>
+                    <h2>Multiplicadors</h2>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-center">
-                        <div class="text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">Mà Normal</div>
-                        <div class="text-4xl font-black text-white">x1</div>
+
+                <div class="multipliers-grid">
+                    <div class="multiplier-item">
+                        <div class="multiplier-label">Mà Normal</div>
+                        <div class="multiplier-value">×1</div>
                     </div>
-                    <div class="bg-amber-900/20 p-6 rounded-2xl border border-amber-600/30 text-center">
-                        <div class="text-amber-400 text-xs font-bold uppercase tracking-widest mb-2">Botifarra</div>
-                        <div class="text-4xl font-black text-white">x2</div>
-                        <div class="text-stone-500 text-[10px] mt-2 italic">Sense triomf</div>
+                    <div class="multiplier-item botifarra">
+                        <div class="multiplier-label">Botifarra</div>
+                        <div class="multiplier-value">×2</div>
+                        <div class="multiplier-note">Sense triomf</div>
                     </div>
-                    <div class="bg-red-900/20 p-6 rounded-2xl border border-red-600/30 text-center">
-                        <div class="text-red-400 text-xs font-bold uppercase tracking-widest mb-2">Contro</div>
-                        <div class="text-4xl font-black text-white">x2 / x4</div>
-                        <div class="text-stone-500 text-[10px] mt-2 italic">La parella que no tria</div>
+                    <div class="multiplier-item contro">
+                        <div class="multiplier-label">Contro</div>
+                        <div class="multiplier-value">×2/×4</div>
+                        <div class="multiplier-note">Parella que no tria</div>
                     </div>
-                    <div class="bg-purple-900/20 p-6 rounded-2xl border border-purple-600/30 text-center">
-                        <div class="text-purple-400 text-xs font-bold uppercase tracking-widest mb-2">Recontro</div>
-                        <div class="text-4xl font-black text-white">x4 / x8</div>
-                        <div class="text-stone-500 text-[10px] mt-2 italic">La parella que ha triat</div>
+                    <div class="multiplier-item recontro">
+                        <div class="multiplier-label">Recontro</div>
+                        <div class="multiplier-value">×4/×8</div>
+                        <div class="multiplier-note">Parella que ha triat</div>
+                    </div>
+                    <div class="multiplier-item santvicenc">
+                        <div class="multiplier-label">Sant Vicenç</div>
+                        <div class="multiplier-value">×8</div>
+                        <div class="multiplier-note">Només si no és botifarra</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ALERTES / RENUNCIS -->
-        <section class="bg-red-50 border-2 border-red-200 rounded-[2.5rem] p-10">
-            <div class="flex items-center gap-4 mb-8 text-red-800">
-                <i data-lucide="shield-alert" class="w-10 h-10"></i>
-                <h2 class="text-3xl font-black uppercase italic">Vigila les faltes!</h2>
-            </div>
-            <div class="grid md:grid-cols-2 gap-12">
-                <div>
-                    <h4 class="text-xl font-bold text-red-900 mb-4 flex items-center gap-2">
-                        <i data-lucide="alert-triangle" class="w-5 h-5"></i> El Renunci
-                    </h4>
-                    <p class="text-red-800 leading-relaxed text-sm">
-                        Si no segueixes el pal o no mates quan és obligatori, es comet un "renunci". La parella contrària guanya automàticament:
-                    </p>
-                    <div class="mt-4 space-y-2">
-                        <div class="bg-white/60 p-3 rounded-xl border border-red-200 flex justify-between items-center text-sm font-bold">
-                            <span>Mà Normal</span>
-                            <span class="text-red-700">36 Punts</span>
-                        </div>
-                        <div class="bg-white/60 p-3 rounded-xl border border-red-200 flex justify-between items-center text-sm font-bold">
-                            <span>Mà amb Multiplicadors</span>
-                            <span class="text-red-700">72 Punts</span>
+        <!-- Alertes -->
+        <section class="section">
+            <div class="alerts-section">
+                <div class="section-title">
+                    <span class="section-title-icon">⚠️</span>
+                    <h2>Vigila les faltes!</h2>
+                </div>
+
+                <div class="alerts-grid">
+                    <div class="alert-card">
+                        <h4>⛔ El Renunci</h4>
+                        <p>Si no segueixes el pal o no mates quan és obligatori (mode estricte), es comet un "renunci". La parella contrària guanya automàticament:</p>
+                        <div class="penalty-list">
+                            <div class="penalty-item">
+                                <span>Mà Normal</span>
+                                <span class="penalty-points">36 Punts</span>
+                            </div>
+                            <div class="penalty-item">
+                                <span>Mà amb Multiplicadors</span>
+                                <span class="penalty-points">72 Punts</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="bg-white p-6 rounded-3xl border border-red-100 shadow-sm flex flex-col justify-center">
-                    <h4 class="text-xl font-bold text-stone-800 mb-3 flex items-center gap-2">
-                        <i data-lucide="message-square" class="w-5 h-5 text-stone-400"></i> Prohibit parlar
-                    </h4>
-                    <p class="text-stone-600 text-sm leading-relaxed">
-                        No es poden fer senyals ni parlar sobre les cartes que es tenen a la mà. Qualsevol comentari sospitós pot ser considerat falta!
-                    </p>
+
+                    <div class="alert-card">
+                        <h4>🤫 Prohibit parlar</h4>
+                        <p>No es poden fer senyals ni parlar sobre les cartes que es tenen a la mà. Qualsevol comentari sospitós pot ser considerat falta!</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <footer class="text-center py-16 border-t border-stone-200 text-stone-400">
-            <p class="text-sm font-medium">© <span id="year"></span> — Infografia Interactiva de la Botifarra</p>
-            <p class="text-xs mt-2 italic">Creat amb passió per al joc de cartes més gran de la nostra terra.</p>
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Infografia Interactiva de la Botifarra</p>
+            <p><a href="index.html">← Tornar al joc</a> · <a href="reglament.html">Reglament complet →</a></p>
         </footer>
-
-    </main>
-
-    <!-- STICKY QUICK REFERENCE -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-stone-200 p-4 shadow-2xl z-50">
-        <div class="max-w-6xl mx-auto flex justify-between items-center text-[10px] sm:text-xs font-bold uppercase tracking-widest text-stone-500">
-            <div class="flex gap-4 md:gap-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Manilla: 5</span>
-                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>As: 4</span>
-                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Rei: 3</span>
-                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Cavall: 2</span>
-                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Sota: 1</span>
-            </div>
-            <div class="bg-red-700 text-white px-4 py-1.5 rounded-full shadow-lg border border-red-800 shrink-0 ml-4">
-                Objectiu 101
-            </div>
-        </div>
     </div>
 
-    <!-- INITIALIZATION SCRIPT -->
-    <script>
-        // Inicializar iconos
-        lucide.createIcons();
-        
-        // Actualizar año en el footer
-        document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
+    <!-- Sticky Reference -->
+    <div class="sticky-reference">
+        <div class="sticky-content">
+            <div class="sticky-cards">
+                <span><span class="sticky-dot"></span> Manilla: 5</span>
+                <span><span class="sticky-dot"></span> As: 4</span>
+                <span><span class="sticky-dot"></span> Rei: 3</span>
+                <span><span class="sticky-dot"></span> Cavall: 2</span>
+                <span><span class="sticky-dot"></span> Sota: 1</span>
+            </div>
+            <div class="sticky-goal">Objectiu 101</div>
+        </div>
+    </div>
 </body>
 </html>

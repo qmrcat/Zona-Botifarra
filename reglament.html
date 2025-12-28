@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reglament de Botifarra</title>
+    <link rel="icon" href="imatges/favicon.ico" type="image/x-icon">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet"> -->
+    <style>
+        :root {
+            --gold: #C9A227;
+            --gold-light: #E8D48B;
+            --burgundy: #6B1C23;
+            --burgundy-dark: #4A1219;
+            --cream: #F5F0E1;
+            --cream-dark: #E8DFC8;
+            --green-felt: #1B5E20;
+            --green-felt-dark: #0D3B0F;
+            --card-white: #FFFEF8;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 50%, var(--burgundy-dark) 100%);
+            min-height: 100vh;
+            color: var(--cream);
+            overflow-x: hidden;
+        }
+
+        /* Textura de fons */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L35 25H55L39 38L45 58L30 45L15 58L21 38L5 25H25L30 5Z' fill='%23C9A227' fill-opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: var(--gold);
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 0.1em;
+        }
+
+        .header p {
+            color: var(--gold-light);
+            font-style: italic;
+            margin-top: 0.3rem;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0.5rem 1rem;
+            background: rgba(201, 162, 39, 0.2);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            color: var(--gold-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(201, 162, 39, 0.4);
+            box-shadow: 0 0 10px rgba(201, 162, 39, 0.3);
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Índex */
+        .index-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .index-card h2 {
+            color: var(--gold);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .index-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .index-list a {
+            color: var(--cream);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            display: block;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .index-list a:hover {
+            background: rgba(201, 162, 39, 0.2);
+            color: var(--gold-light);
+        }
+
+        /* Seccions */
+        .section {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            scroll-margin-top: 100px;
+        }
+
+        .section h2 {
+            color: var(--gold);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-number {
+            background: var(--gold);
+            color: var(--burgundy-dark);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .section p {
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            color: var(--cream);
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Taules */
+        .table-container {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+        }
+
+        th {
+            background: rgba(201, 162, 39, 0.2);
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        /* Llistes */
+        .section ul, .section ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        /* Destacats */
+        .highlight {
+            background: rgba(201, 162, 39, 0.15);
+            border-left: 3px solid var(--gold);
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .highlight p {
+            margin: 0;
+        }
+
+        /* Pals de cartes */
+        .suits {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .suit-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            min-width: 80px;
+        }
+
+        .suit-icon {
+            font-size: 2rem;
+        }
+
+        .suit-name {
+            font-weight: 600;
+            color: var(--gold-light);
+        }
+
+        /* Multiplicadors */
+        .multipliers {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .multiplier-item {
+            background: rgba(201, 162, 39, 0.2);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 0.8rem 1.2rem;
+            text-align: center;
+        }
+
+        .multiplier-name {
+            font-weight: 600;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .multiplier-value {
+            font-size: 1.3rem;
+            color: var(--cream);
+        }
+
+        /* Subseccions */
+        .subsection {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .subsection h3 {
+            color: var(--gold-light);
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(245, 240, 225, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Botó tornar a dalt */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gold);
+            color: var(--burgundy-dark);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 100;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .back-button {
+                position: static;
+                transform: none;
+                display: inline-block;
+                margin-bottom: 0.5rem;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1rem 1.2rem;
+            }
+
+            .index-list {
+                grid-template-columns: 1fr;
+            }
+
+            .suits {
+                gap: 0.8rem;
+            }
+
+            .suit-item {
+                min-width: 70px;
+                padding: 0.6rem 0.8rem;
+            }
+
+            .multipliers {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .multiplier-item {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="back-button">← Tornar al joc</a>
+        <h1>📜 Reglament de Botifarra</h1>
+        <p>Versió lliure o occidental</p>
+    </header>
+
+    <div class="container">
+        <!-- Índex -->
+        <div class="index-card">
+            <h2>📋 Índex</h2>
+            <ul class="index-list">
+                <li><a href="#jugadors">1. Jugadors</a></li>
+                <li><a href="#cartes">2. Cartes</a></li>
+                <li><a href="#objectiu">3. Objectiu de la partida</a></li>
+                <li><a href="#puntuacio">4. Puntuació</a></li>
+                <li><a href="#repartir">5. Repartir les cartes</a></li>
+                <li><a href="#triomf">6. Escollir triomf</a></li>
+                <li><a href="#contro">7. Contro, Recontro i Sant Vicenç</a></li>
+                <li><a href="#jugar">8. Jugar les cartes</a></li>
+                <li><a href="#recompte">9. Recompte de punts</a></li>
+                <li><a href="#final">10. Final de la partida</a></li>
+                <li><a href="#valor">11. Valor de les cartes</a></li>
+                <li><a href="#normes">12. Normes per jugar</a></li>
+                <li><a href="#comentaris">13. Comentaris finals</a></li>
+                <li><a href="#incompliment">14. Incompliment de normes</a></li>
+                <li><a href="#nova-partida">15. Nova partida</a></li>
+            </ul>
+        </div>
+
+        <!-- 1. Jugadors -->
+        <section class="section" id="jugadors">
+            <h2><span class="section-number">1</span> Jugadors</h2>
+            <p>En aquesta versió del joc de la Botifarra, s'hi juga amb <strong>quatre jugadors</strong>, que formant parella, seuran l'un davant de l'altre.</p>
+        </section>
+
+        <!-- 2. Cartes -->
+        <section class="section" id="cartes">
+            <h2><span class="section-number">2</span> Cartes</h2>
+            <p>Per a jugar a la botifarra s'utilitza una baralla de <strong>48 cartes</strong> formada per quatre pals amb 12 cartes cadascun:</p>
+            <div class="suits">
+                <div class="suit-item">
+                    <span class="suit-icon">🪙</span>
+                    <span class="suit-name">Oros</span>
+                </div>
+                <div class="suit-item">
+                    <span class="suit-icon">🏆</span>
+                    <span class="suit-name">Copes</span>
+                </div>
+                <div class="suit-item">
+                    <span class="suit-icon">⚔️</span>
+                    <span class="suit-name">Espases</span>
+                </div>
+                <div class="suit-item">
+                    <span class="suit-icon">🌿</span>
+                    <span class="suit-name">Bastos</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Objectiu -->
+        <section class="section" id="objectiu">
+            <h2><span class="section-number">3</span> Objectiu de la partida</h2>
+            <p>L'objectiu de la partida és arribar als <strong>101 punts</strong> abans que la parella contrària.</p>
+        </section>
+
+        <!-- 4. Puntuació -->
+        <section class="section" id="puntuacio">
+            <h2><span class="section-number">4</span> Puntuació</h2>
+            <p>El valor de cadascuna de les cartes és:</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Carta</th>
+                            <th>Número</th>
+                            <th>Punts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Manilla</strong></td>
+                            <td>9</td>
+                            <td>5 punts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>As</strong></td>
+                            <td>1</td>
+                            <td>4 punts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rei</strong></td>
+                            <td>12</td>
+                            <td>3 punts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cavall</strong></td>
+                            <td>11</td>
+                            <td>2 punts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sota</strong></td>
+                            <td>10</td>
+                            <td>1 punt</td>
+                        </tr>
+                        <tr>
+                            <td>Cartes del 2 al 8</td>
+                            <td>2-8</td>
+                            <td>0 punts</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>Per cada <strong>basa guanyada</strong> es compta un punt. Això vol dir que en cada mà hi ha <strong>72 punts</strong> a repartir entre les dues parelles.</p>
+            <div class="highlight">
+                <p>La parella guanyadora de cada mà s'apuntarà la quantitat de punts que passi de 36. Aquesta quantitat es multiplica segons els contros realitzats.</p>
+            </div>
+        </section>
+
+        <!-- 5. Repartir -->
+        <section class="section" id="repartir">
+            <h2><span class="section-number">5</span> Repartir les cartes</h2>
+            <p>Abans de començar a jugar una partida, cal establir quin jugador ha de ser el primer en repartir les cartes i triar triomf. Per això un dels quatre jugadors atribueix un pal a cada jugador i aleatòriament gira una carta de la baralla. Aquell jugador que tenia atribuït el pal de la carta girada, serà el primer en repartir les cartes.</p>
+            <p>El jugador situat a l'<strong>esquerra</strong> del repartidor ha de barrejar les cartes i, un cop barrejades, el <strong>company</strong> del jugador que ha de repartir talla la baralla.</p>
+            <p>Les cartes s'han de donar de <strong>quatre en quatre</strong>, començant pel jugador que està a la <strong>dreta</strong> del que reparteix, fins a repartir-ne 12 a cada jugador.</p>
+        </section>
+
+        <!-- 6. Triomf -->
+        <section class="section" id="triomf">
+            <h2><span class="section-number">6</span> Escollir triomf</h2>
+            <p>Un cop repartides les cartes i abans de començar a jugar, cal escollir triomf. El jugador que ha repartit les cartes té dues opcions:</p>
+            
+            <div class="subsection">
+                <h3>a) Escollir ell triomf</h3>
+                <p>Cal dir en veu alta el pal corresponent:</p>
+                <div class="suits">
+                    <div class="suit-item">
+                        <span class="suit-icon">🪙</span>
+                        <span class="suit-name">Oros</span>
+                    </div>
+                    <div class="suit-item">
+                        <span class="suit-icon">🏆</span>
+                        <span class="suit-name">Copes</span>
+                    </div>
+                    <div class="suit-item">
+                        <span class="suit-icon">⚔️</span>
+                        <span class="suit-name">Espases</span>
+                    </div>
+                    <div class="suit-item">
+                        <span class="suit-icon">🌿</span>
+                        <span class="suit-name">Bastos</span>
+                    </div>
+                </div>
+                <p>O bé declarar <strong>BOTIFARRA</strong> 🎉, en aquest cas no hi ha cap pal que mani sobre els altres i els punts es dupliquen.</p>
+            </div>
+            
+            <div class="subsection">
+                <h3>b) Passar el torn al company</h3>
+                <p>En cas de passar el torn al company, aquest es veu <strong>obligat</strong> a fer triomf escollint una de les opcions anteriors (no pot tornar a passar).</p>
+            </div>
+        </section>
+
+        <!-- 7. Contro -->
+        <section class="section" id="contro">
+            <h2><span class="section-number">7</span> Contro, Recontro i Sant Vicenç</h2>
+            <p>Un cop s'ha escollit triomf, es pot iniciar una seqüència de contros que multipliquen els punts de la mà:</p>
+            
+            <div class="multipliers">
+                <div class="multiplier-item">
+                    <span class="multiplier-name">CONTRO</span>
+                    <span class="multiplier-value">×2</span>
+                </div>
+                <div class="multiplier-item">
+                    <span class="multiplier-name">RECONTRO</span>
+                    <span class="multiplier-value">×4</span>
+                </div>
+                <div class="multiplier-item">
+                    <span class="multiplier-name">SANT VICENÇ</span>
+                    <span class="multiplier-value">×8</span>
+                </div>
+            </div>
+            
+            <div class="subsection">
+                <h3>Contro</h3>
+                <p>La parella contrària (la que <strong>no</strong> ha fet triomf) pot contrar. Per contrar, s'ha de dir clarament: <strong>CONTRO</strong>. Si no es vol contrar, es donarà un cop amb la mà sobre la taula.</p>
+            </div>
+            
+            <div class="subsection">
+                <h3>Recontro</h3>
+                <p>Un cop la mà està contrada, la parella que ha fet triomf pot recontrar. Per recontrar, s'ha de dir clarament: <strong>RECONTRO</strong>.</p>
+            </div>
+            
+            <div class="subsection">
+                <h3>Sant Vicenç</h3>
+                <p>Només si la mà està recontrada i el triomf <strong>no</strong> és botifarra, la parella que ha contrat pot fer Sant Vicenç. Cal dir clarament: <strong>SANT VICENÇ</strong>.</p>
+            </div>
+        </section>
+
+        <!-- 8. Jugar -->
+        <section class="section" id="jugar">
+            <h2><span class="section-number">8</span> Jugar les cartes</h2>
+            <p>El primer jugador a tirar una carta és el que està a la <strong>dreta</strong> de qui ha repartit. Escollirà una carta de la seva mà i la deixarà davant seu sobre la taula cara enlaire.</p>
+            <p>A continuació, la resta de jugadors aniran jugant per ordre <strong>contrari al de les busques del rellotge</strong> (sentit antihorari), fins a completar la basa.</p>
+            <p>La parella que hagi guanyat la basa recollirà les cartes i les guardarà cara avall en un piló. El jugador que guanyi una basa començarà la següent.</p>
+        </section>
+
+        <!-- 9. Recompte -->
+        <section class="section" id="recompte">
+            <h2><span class="section-number">9</span> Recompte de punts i continuació</h2>
+            <p>Un cop jugades totes les cartes es comptaran els punts que ha fet cada parella. La parella que hagi guanyat la mà s'anotarà els punts corresponents.</p>
+            <p>A continuació, el jugador que ha repartit a la mà anterior serà l'encarregat de barrejar les cartes, el de la seva esquerra de tallar la baralla, i el de la seva <strong>dreta</strong> serà l'encarregat de repartir i escollir triomf.</p>
+        </section>
+
+        <!-- 10. Final -->
+        <section class="section" id="final">
+            <h2><span class="section-number">10</span> Final de la partida</h2>
+            <p>La partida s'acaba quan una de les parelles ha aconseguit <strong>superar els 100 punts</strong>.</p>
+        </section>
+
+        <!-- 11. Valor -->
+        <section class="section" id="valor">
+            <h2><span class="section-number">11</span> Valor de les cartes</h2>
+            <p>Cada carta té un valor determinat. La carta de més valor de les jugades a cada basa és la que guanya o "mata" les altres.</p>
+            <p>Dins de cada pal, el valor de les cartes (de més a menys) és:</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Posició</th>
+                            <th>Carta</th>
+                            <th>Número</th>
+                            <th>Punts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1a</td><td><strong>Manilla</strong></td><td>9</td><td>5</td></tr>
+                        <tr><td>2a</td><td><strong>As</strong></td><td>1</td><td>4</td></tr>
+                        <tr><td>3a</td><td><strong>Rei</strong></td><td>12</td><td>3</td></tr>
+                        <tr><td>4a</td><td><strong>Cavall</strong></td><td>11</td><td>2</td></tr>
+                        <tr><td>5a</td><td><strong>Sota</strong></td><td>10</td><td>1</td></tr>
+                        <tr><td>6a</td><td>Vuit</td><td>8</td><td>0</td></tr>
+                        <tr><td>7a</td><td>Set</td><td>7</td><td>0</td></tr>
+                        <tr><td>8a</td><td>Sis</td><td>6</td><td>0</td></tr>
+                        <tr><td>9a</td><td>Cinc</td><td>5</td><td>0</td></tr>
+                        <tr><td>10a</td><td>Quatre</td><td>4</td><td>0</td></tr>
+                        <tr><td>11a</td><td>Tres</td><td>3</td><td>0</td></tr>
+                        <tr><td>12a</td><td>Dos</td><td>2</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="highlight">
+                <p>Per matar la carta que comença una basa només es pot fer amb una carta de <strong>més valor del seu mateix pal</strong> o bé amb un <strong>triomf</strong>.</p>
+            </div>
+        </section>
+
+        <!-- 12. Normes -->
+        <section class="section" id="normes">
+            <h2><span class="section-number">12</span> Normes per jugar les cartes</h2>
+            
+            <div class="subsection">
+                <h3>Primer jugador de la basa</h3>
+                <p>Pot jugar <strong>qualsevol carta</strong>. El pal d'aquesta carta és el que anomenarem "pal de sortida".</p>
+            </div>
+            
+            <div class="subsection">
+                <h3>a) Si la basa va del company</h3>
+                <p>(La carta del company és la que està guanyant la basa)</p>
+                <ul>
+                    <li>Si tens cartes del pal de sortida, has de jugar-ne una <strong>sense necessitat de superar-la</strong>.</li>
+                    <li>Si no tens cartes del pal de sortida, pots jugar qualsevol carta.</li>
+                </ul>
+            </div>
+            
+            <div class="subsection">
+                <h3>b) Si la basa NO va del company</h3>
+                <p>(La carta guanyadora és d'un dels jugadors de la parella contrària)</p>
+                <ul>
+                    <li>Si tens cartes del pal de sortida, has de jugar-ne una i, <strong>sempre que puguis, has de matar-la</strong>.</li>
+                    <li>Si no tens el pal de sortida però tens triomf que guanyi, has de jugar-lo.</li>
+                    <li>Si no pots guanyar de cap manera, pots jugar la carta que vulguis.</li>
+                </ul>
+            </div>
+            
+            <div class="highlight">
+                <p><strong>Resum:</strong> Únicament estem obligats a matar les cartes dels contraris, no les del company. Sempre hem de tirar cartes del pal de sortida si en tenim.</p>
+            </div>
+        </section>
+
+        <!-- 13. Comentaris -->
+        <section class="section" id="comentaris">
+            <h2><span class="section-number">13</span> Comentaris finals</h2>
+            <p>Jugant a la Botifarra, cal tenir en compte que està <strong>prohibit</strong> parlar, ensenyar les cartes i fer senyals que puguin indicar quines cartes tenim. Malgrat això, és molt normal fer comentaris durant la partida per fer-la més entretinguda.</p>
+            <p>Les cartes jugades s'han de col·locar en un piló cara avall. Cada parella tindrà el seu piló, i només es podrà girar <strong>l'última basa</strong> de cada piló per repassar les cartes jugades.</p>
+            <p>La botifarra és un joc d'<strong>estratègia</strong>: abans de tirar una carta s'ha de pensar bé quina és l'opció més convenient, ja que un cop hem tirat una carta ja no es pot replegar.</p>
+        </section>
+
+        <!-- 14. Incompliment -->
+        <section class="section" id="incompliment">
+            <h2><span class="section-number">14</span> Incompliment de les normes</h2>
+            <p>L'incompliment de qualsevol norma suposa una <strong>sanció</strong> que representarà la pèrdua dels punts en joc:</p>
+            <ul>
+                <li>Mà normal: l'altra parella anota <strong>36 punts</strong></li>
+                <li>Botifarra o contrat: l'altra parella anota <strong>72 punts</strong></li>
+                <li>I així successivament segons els multiplicadors</li>
+            </ul>
+            <p>Donar malament les cartes suposa començar una nova mà sense penalització de punts, però repartirà i farà triomf el jugador situat a la dreta del que s'ha equivocat.</p>
+        </section>
+
+        <!-- 15. Nova partida -->
+        <section class="section" id="nova-partida">
+            <h2><span class="section-number">15</span> Començament d'una nova partida</h2>
+            <p>Si un cop acabada una partida se'n vol començar una altra (amb els mateixos jugadors i parelles), es continuarà el mateix procediment: barrejarà l'últim que ha fet triomf, i repartirà i farà triomf el jugador de la seva dreta.</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Reglament de la Botifarra - Versió lliure o occidental</p>
+            <p><a href="index.html">← Tornar al joc</a></p>
+        </footer>
+    </div>
+
+    <!-- Botó tornar a dalt -->
+    <button class="back-to-top" id="back-to-top" title="Tornar a dalt">↑</button>
+
+    <script>
+        // Botó tornar a dalt
+        const backToTop = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Scroll suau per als enllaços de l'índex
+        document.querySelectorAll('.index-list a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

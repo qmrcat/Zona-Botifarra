@@ -1,4 +1,39 @@
 // ==================== CONFIGURACIÓ DEL JOC ====================
+        const versioApp = "0.5.2";
+        // Configuració del mode de joc
+        // - false (per defecte): Mode LLIURE - només cal seguir el pal, sense obligació de matar
+        // - true: Mode ESTRICTE - si pots matar, has de matar (segons reglament oficial)
+        let FORCE_KILL_MODE = loadSettings().forceKillMode;
+        
+        // Funcions per gestionar la configuració amb localStorage
+        function loadSettings() {
+            try {
+                const saved = localStorage.getItem('botifarra-settings');
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (e) {
+                console.warn('No s\'ha pogut carregar la configuració:', e);
+            }
+            // Valors per defecte
+            return {
+                forceKillMode: false,
+                playerName: ''
+            };
+        }
+        
+        function saveSettings(playerName) {
+            try {
+                const settings = {
+                    forceKillMode: FORCE_KILL_MODE,
+                    playerName: playerName !== null ? playerName : loadSettings().playerName
+                };
+                localStorage.setItem('botifarra-settings', JSON.stringify(settings));
+            } catch (e) {
+                console.warn('No s\'ha pogut desar la configuració:', e);
+            }
+        }
+        
         const SUITS = ['oros', 'copes', 'espases', 'bastos'];
         const SUIT_ICONS = {
             'oros': '🪙',
@@ -33,7 +68,7 @@
             9: 'M', 10: 'S', 11: 'C', 12: 'R'
         };
 
-        // Jugadors: south (humà), west, north (company), east
+        // Jugadors: south (humà), north (company), west, east - l'ordre de joc és antihorari: south -> east -> north -> west
         const PLAYERS = ['south', 'north', 'west', 'east'];
         
         // Llista de noms per als bots (pots afegir-ne o modificar-los)
@@ -46,7 +81,7 @@
             'Oupman', 'Pol', 'Roger', 'Alex', 'Francesc', 'Mercè', 'Jaume',
             'Xavier', 'Isa','Laura','Isaac','Didac', 'Miquel', 'Cristina',
             'Amalric ', 'Berenguer', 'Ermessenda', 'Constança', 'Hug', 'Guerau',
-            'Sibil·la', 'Lluc', 'Agnès', 'Adelaida', 
+            'Sibil·la', 'Lluc', 'Agnès', 'Adelaida', 'Ton'
         ];
         
         // Noms dels jugadors (es modifica dinàmicament)
@@ -392,8 +427,7 @@
             
             // Repartir 12 cartes a cada jugador
             let cardIndex = 0;
-            // Començar pel jugador a la dreta del que reparteix
-            // let dealTo = getNextPlayer(getNextPlayer(getNextPlayer(gameState.dealer)));
+            // Començar pel jugador a la dreta del que reparteix (sentit antihorari)
             let dealTo = getNextPlayer(gameState.dealer);
             
             for (let round = 0; round < 3; round++) {  // 3 rondes de 4 cartes
@@ -419,6 +453,16 @@
             // Si tenim el pal de sortida, hem de jugar-lo
             if (hasLeadSuit && card.suit !== leadSuit) return false;
             
+            // MODE LLIURE: només cal seguir el pal, sense obligació de matar
+            if (!FORCE_KILL_MODE) {
+                if (hasLeadSuit) {
+                    return card.suit === leadSuit;
+                }
+                // No tenim el pal de sortida, podem jugar qualsevol carta
+                return true;
+            }
+            
+            // MODE ESTRICTE: hem de matar si podem (reglament oficial)
             // Comprovar si hem de matar
             const partnerPlayed = gameState.currentTrick.find(t => t.player === 'north');
             const winningCard = findWinningCard(gameState.currentTrick, leadSuit, gameState.trump);
@@ -465,6 +509,16 @@
             const leadSuit = gameState.trickLeadSuit;
             const hasLeadSuit = hand.some(c => c.suit === leadSuit);
             
+            // MODE LLIURE: només cal seguir el pal, sense obligació de matar
+            if (!FORCE_KILL_MODE) {
+                if (hasLeadSuit) {
+                    return hand.filter(c => c.suit === leadSuit);
+                }
+                // No tenim el pal de sortida, podem jugar qualsevol carta
+                return [...hand];
+            }
+            
+            // MODE ESTRICTE: hem de matar si podem (reglament oficial)
             // Trobar la carta guanyadora actual
             const winningCard = findWinningCard(gameState.currentTrick, leadSuit, gameState.trump);
             const partner = getPartner(player);
@@ -739,8 +793,18 @@
         async function startGame() {
             // Obtenir el nom del jugador humà
             const playerNameInput = document.getElementById('player-name-input');
-            const playerName = playerNameInput.value.trim() || 'Tu';
+            const playerNameValue = playerNameInput.value.trim();
+            console.log("🚀 ~ startGame ~ playerNameValue:", playerNameValue)
+            const playerName = playerNameValue || 'Tu';
             PLAYER_NAMES.south = playerName;
+
+                        // Desar el nom del jugador (només si n'ha escrit un)
+            if (playerNameValue) {
+                saveSettings(playerNameValue);
+            }
+
+            // // Desar el nom del jugador
+            // saveSettings(playerName);
             
             // Assignar noms aleatoris als bots
             assignRandomBotNames();
@@ -889,8 +953,9 @@
             const controplayers = otherTeam === 'ns' ? ['south', 'north'] : ['east', 'west'];
             
             for (const player of controplayers) {
-                if (player === 'south') {
+                if (player === 'south') { 
                     // Preguntar a l'humà
+                    log(`${PLAYER_NAMES[player]} vol CONTRA?`, true);
                     document.getElementById('contro-title').textContent = 'Vols contrar?';
                     document.getElementById('btn-contro-yes').textContent = 'CONTRO';
                     const decision = await askHumanContro();
@@ -904,6 +969,7 @@
                         return;
                     }
                 } else {
+                    log(`${PLAYER_NAMES[player]} vol CONTRA?`, true);
                     await delay(800);
                     if (botDecideContro(player)) {
                         gameState.controPhase = 'contro';
@@ -928,6 +994,7 @@
             
             for (const player of recontroPlayers) {
                 if (player === 'south') {
+                    log(`${PLAYER_NAMES[player]} vol recontrar?`, true);
                     document.getElementById('contro-title').textContent = 'Vols recontrar?';
                     document.getElementById('btn-contro-yes').textContent = 'RECONTRO';
                     const decision = await askHumanContro();
@@ -946,6 +1013,7 @@
                 } else {
                     await delay(800);
                     if (botDecideContro(player)) {
+                        log(`${PLAYER_NAMES[player]} vol recontrar?`, true);
                         gameState.controPhase = 'recontro';
                         gameState.multiplier *= 2;
                         log(`${PLAYER_NAMES[player]} RECONTRA!`, true);
@@ -970,6 +1038,7 @@
             
             for (const player of svPlayers) {
                 if (player === 'south') {
+                    log(`${PLAYER_NAMES[player]} vol fer Sant Vicenç?`, true);
                     document.getElementById('contro-title').textContent = 'Vols fer Sant Vicenç?';
                     document.getElementById('btn-contro-yes').textContent = 'SANT VICENÇ';
                     const decision = await askHumanContro();
@@ -984,6 +1053,7 @@
                 } else {
                     await delay(800);
                     if (botDecideContro(player)) {
+                        log(`${PLAYER_NAMES[player]} vol fer Sant Vicenç?`, true);
                         gameState.controPhase = 'santvicenc';
                         gameState.multiplier = 8;
                         log(`${PLAYER_NAMES[player]} fa SANT VICENÇ!`, true);
@@ -1436,7 +1506,13 @@
             document.getElementById('start-screen').style.display = 'flex';
             document.getElementById('game-log').innerHTML = '';
             // Netejar el camp de nom per si es vol canviar
-            document.getElementById('player-name-input').value = '';
+            // document.getElementById('player-name-input').value = '';
+            const savedName = returnNameFromStorage()
+            if (savedName) {
+                // document.getElementById('player-name-input').value = savedName;
+                omplenarNomJugador(savedName)
+            }
+
         }
 
         function delay(ms) {
@@ -1448,8 +1524,37 @@
         document.getElementById('btn-new-game').addEventListener('click', resetGame);
         document.getElementById('btn-main-menu').addEventListener('click', goToMainMenu);
         document.getElementById('info-toggle').addEventListener('click', () => {
-            window.location.href = '/Zona-Botifarra/infografia.html'; // Substitueix amb la URL desitjada
+            window.location.href = '/Zona-Botifarra/reglament.html'; // Substitueix amb la URL desitjada
         });
+        
+        // Modal de configuració
+        document.getElementById('settings-toggle').addEventListener('click', () => {
+            const modal = document.getElementById('settings-modal');
+            modal.style.display = 'flex';
+            // Actualitzar el radio button segons la configuració actual
+            const radioValue = FORCE_KILL_MODE ? 'strict' : 'free';
+            document.querySelector(`input[name="game-mode"][value="${radioValue}"]`).checked = true;
+        });
+        
+        document.getElementById('settings-close').addEventListener('click', () => {
+            document.getElementById('settings-modal').style.display = 'none';
+        });
+        
+        // Tancar modal clicant fora
+        document.getElementById('settings-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'settings-modal') {
+                document.getElementById('settings-modal').style.display = 'none';
+            }
+        });
+        
+        // Canvi de mode de joc
+        document.querySelectorAll('input[name="game-mode"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                FORCE_KILL_MODE = e.target.value === 'strict';
+                saveSettings();
+            });
+        });
+        
         // Toggle historial de mans
         document.getElementById('toggle-hands-history').addEventListener('click', function() {
             const content = document.getElementById('hands-history-content');
@@ -1525,4 +1630,25 @@
             if (e.key === 'Enter' && document.getElementById('start-screen').style.display !== 'none') {
                 startGame();
             }
+
+         
         });
+
+        function returnNameFromStorage(){
+           return loadSettings().playerName;
+        }
+
+        function omplenarNomJugador(savedName){
+            document.getElementById('player-name-input').value = savedName;
+        }
+
+        // Carregar el nom del jugador desat
+        (function() {
+            // const savedName = loadSettings().playerName;
+            const savedName = returnNameFromStorage()
+            if (savedName) {
+                // document.getElementById('player-name-input').value = savedName;
+                omplenarNomJugador(savedName)
+            }
+            document.getElementById('versio-app').textContent = versioApp;
+        })();   

@@ -194,6 +194,215 @@
             box-shadow: 0 0 15px rgba(201, 162, 39, 0.3);
         }
 
+        /* Botons d'informació i configuració */
+        #info-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            animation: fadeIn 1.5s ease-out 0.7s both;
+        }
+
+        #info-container button {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-family: 'Source Sans Pro', sans-serif;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            color: var(--gold-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #info-container button:hover {
+            background: rgba(201, 162, 39, 0.2);
+            box-shadow: 0 0 10px rgba(201, 162, 39, 0.3);
+        }
+
+        /* Modal de configuració */
+        #settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .settings-content {
+            background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+        }
+
+        .settings-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .settings-close-btn {
+            background: none;
+            border: none;
+            color: var(--gold-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+
+        .settings-close-btn:hover {
+            color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        .settings-body {
+            padding: 1.5rem;
+        }
+
+        .settings-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold-light);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+        }
+
+        .settings-option {
+            margin-bottom: 0.8rem;
+        }
+
+        .settings-option:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Radio buttons personalitzats */
+        .radio-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            cursor: pointer;
+            padding: 0.8rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .radio-label:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .radio-label input[type="radio"] {
+            display: none;
+        }
+
+        .radio-checkmark {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            margin-top: 2px;
+        }
+
+        .radio-label input[type="radio"]:checked + .radio-checkmark {
+            background: var(--gold);
+        }
+
+        .radio-label input[type="radio"]:checked + .radio-checkmark::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--burgundy-dark);
+            border-radius: 50%;
+        }
+
+        .radio-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .radio-title {
+            color: var(--cream);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .radio-description {
+            color: rgba(245, 240, 225, 0.7);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        /* .settings-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(201, 162, 39, 0.3);
+            text-align: center;
+        } */
+.settings-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(201, 162, 39, 0.3);
+    padding-top: 10px;
+    margin-top: 20px;
+}
+        .settings-hint {
+            color: rgba(245, 240, 225, 0.5);
+            font-size: 0.85rem;
+            font-style: italic;
+            margin: 0;
+        }
+
+        .settings-footer-left .settings-hint {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+  margin-left: 18px;
+}
+
+.settings-footer-right .settings-versio {
+    font-size: 0.9rem;
+    color: hsl(34, 91%, 51%);
+    font-weight: bold;
+    margin-bottom: 10px;
+  margin-right: 25px;
+}
+
         /* Taula de joc */
         #game-container {
             display: none;
@@ -1051,6 +1260,25 @@
         }
 
         #info-toggle:hover {
+            background: var(--burgundy);
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        #settings-toggle {
+            background: linear-gradient(135deg, var(--burgundy-dark), var(--burgundy));
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 0.7rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        #settings-toggle:hover {
             background: var(--burgundy);
             box-shadow: 0 0 10px var(--gold);
         }

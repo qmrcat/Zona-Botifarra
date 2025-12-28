@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Botifarra - Joc de Cartes Català</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" href="imatges/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="180x180" href="imatges/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="imatges/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="imatges/favicon-16x16.png">
-    <link rel="manifest" href="imatges/site.webmanifest">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet"> -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -29,9 +25,11 @@
             <label for="player-name-input">El teu nom:</label>
             <input type="text" id="player-name-input" placeholder="Escriu el teu nom..." maxlength="15">
         </div>
-        <button id="start-button">Començar Partida</button>
+        <!-- <button id="start-button">Començar Partida</button> -->
+        <button id="start-button">Jugar</button>
         <div id="info-container">
-            <button id="info-toggle">ⓘ Com es juga a la Botifarra</button>
+            <button id="settings-toggle">⚙️ Configuració</button>
+            <button id="info-toggle">📚 Com es juga?</button>
         </div>
     </div>
 
@@ -241,6 +239,49 @@
             <div class="game-over-buttons">
                 <button id="btn-new-game">Nova Partida</button>
                 <button id="btn-main-menu">Menú Principal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de configuració -->
+    <div id="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2>⚙️ Configuració</h2>
+                <button id="settings-close" class="settings-close-btn">✕</button>
+            </div>
+            <div class="settings-body">
+                <div class="settings-section">
+                    <h3>Mode de joc</h3>
+                    <div class="settings-option">
+                        <label class="radio-label">
+                            <input type="radio" name="game-mode" value="free" checked>
+                            <span class="radio-checkmark"></span>
+                            <div class="radio-text">
+                                <span class="radio-title">Mode lliure</span>
+                                <span class="radio-description">Només cal seguir el pal, sense obligació de matar</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="settings-option">
+                        <label class="radio-label">
+                            <input type="radio" name="game-mode" value="strict">
+                            <span class="radio-checkmark"></span>
+                            <div class="radio-text">
+                                <span class="radio-title">Mode estricte</span>
+                                <span class="radio-description">Si pots matar, has de matar (reglament oficial)</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <div class="settings-footer-left">
+                    <p class="settings-hint">Els canvis es desen automàticament</p>
+                </div>
+                <div class="settings-footer-right">
+                    <p id="versio-app" class="settings-versio">0.5.1</p>
+                </div>
             </div>
         </div>
     </div>
